@@ -28,6 +28,7 @@ nbdist/
 ### Node.js
 node_modules/
 *.log
+.npmrc
 
 generated/
 */src/main/resources/templates/index.html
