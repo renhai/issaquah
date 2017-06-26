@@ -1,0 +1,17 @@
+{
+  "apps": [
+    {
+      "name": "todo",
+      "script": "index.js",
+      "merge_logs": true,
+      "error_file": "/tmp/error.log",
+      "out_file": "/tmp/out.log",
+      "pid_file": "/tmp/node.pid",
+      "instances": 0,
+      "exec_mode": "cluster",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  ]
+}

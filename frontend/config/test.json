@@ -1,0 +1,6 @@
+{
+  "development": true,
+  "devTools": false,
+  "host": "localhost",
+  "port": 3000
+}

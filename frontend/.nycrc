@@ -1,0 +1,18 @@
+{
+  "include": [
+    "src/**/*.js"
+  ],
+  "exclude": [
+    "src/**/*.spec.js"
+  ],
+  "reporter": [
+    "text",
+    "lcov",
+    "cobertura"
+  ],
+  "report-dir": "./ci",
+  "all": true,
+  "cache": true,
+  "instrument": false,
+  "sourceMap": false
+}

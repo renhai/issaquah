@@ -1,0 +1,9 @@
+.DS_Store
+.idea
+*.iml
+*.log
+*.heapsnapshot
+node_modules
+dist
+static/index.html
+coverage

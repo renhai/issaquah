@@ -1,0 +1,3 @@
+src/messages/
+static/
+**/*.spec.js

@@ -1,0 +1,35 @@
+{
+  "presets": [
+    "es2015-loose",
+    "stage-0",
+    "react"
+  ],
+  "env": {
+    "development": {
+      "plugins": [
+        "typecheck",
+        "react-hot-loader/babel"
+      ]
+    },
+    "test": {
+      "plugins": [
+        ["istanbul", {
+          "exclude": [
+            "**/*.spec.js"
+          ]
+        }]
+      ]
+    }
+  },
+  "plugins": [
+    "transform-es2015-template-literals",
+    "transform-es3-member-expression-literals",
+    "transform-es3-property-literals",
+    "transform-jscript",
+    "transform-exponentiation-operator",
+    "transform-runtime",
+    "add-module-exports",
+    "transform-decorators-legacy"
+  ]
+
+}
