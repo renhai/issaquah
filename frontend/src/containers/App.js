@@ -28,7 +28,7 @@ export default class App extends React.Component {
           <Helmet {...this.head} />
           <div>
             <Header />
-            <div className="container">
+            <div className="container-fluid">
               {children}
             </div>
             <Footer />

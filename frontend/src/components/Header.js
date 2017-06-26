@@ -27,7 +27,7 @@ export default class Header extends React.Component {
 
     return (
       <header>
-        <Navbar>
+        <Navbar fluid>
           <Navbar.Header>
             <Navbar.Brand>
               <a href="/">测试员管理</a>

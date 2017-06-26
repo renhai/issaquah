@@ -11,7 +11,7 @@ export default function Footer() {
   };
   return (
     <footer className="footer" style={footerStyle}>
-      <div className="container">
+      <div className="container-fluid">
         <p style={{margin: '20px 0'}}>© Cui 2017</p>
       </div>
     </footer>
