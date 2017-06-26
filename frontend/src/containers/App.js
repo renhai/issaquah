@@ -17,7 +17,7 @@ export default class App extends React.Component {
   };
 
   head = {
-    title: 'Hai Ren',
+    title: '测试员管理',
   };
 
   render() {
@@ -28,10 +28,8 @@ export default class App extends React.Component {
           <Helmet {...this.head} />
           <div>
             <Header />
-            <div className="section">
-              <div className="container">
-                {children}
-              </div>
+            <div className="container">
+              {children}
             </div>
             <Footer />
           </div>
