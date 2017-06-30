@@ -2,12 +2,18 @@ import React from 'react';
 // import Helmet from 'react-helmet';
 import {injectIntl} from 'react-intl';
 import {Table} from 'react-bootstrap';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
+
 // import className from 'classnames/bind';
 
 // const cx = className.bind(require('./Home.css'));
 
 @injectIntl
 export default class Home extends React.Component {
+
+  componentDidMount() {
+    NotificationManager.error('Warning message', 'Close after 3000ms', 3000);
+  }
 
   render() {
     const rows = [];
@@ -80,6 +86,7 @@ export default class Home extends React.Component {
             </Table>
           </div>
         </div>
+        <NotificationContainer />
       </div>
     );
   }

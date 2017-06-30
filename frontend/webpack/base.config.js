@@ -23,11 +23,11 @@ export const loaders = [
     loader: 'json'
   },
   {
-    test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+    test: /\.eot(\?[a-z0-9=&.]+)?$/,
     loader: 'file'
   },
   {
-    test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/,
+    test: /\.woff2?(\?[a-z0-9=&.]+)?$/,
     loader: 'url',
     query: {
       limit,
@@ -35,7 +35,7 @@ export const loaders = [
     }
   },
   {
-    test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+    test: /\.ttf(\?[a-z0-9=&.]+)?$/,
     loader: 'url',
     query: {
       limit,
@@ -43,7 +43,7 @@ export const loaders = [
     }
   },
   {
-    test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+    test: /\.svg(\?[a-z0-9=&.]+)?$/,
     loader: 'url',
     query: {
       limit,

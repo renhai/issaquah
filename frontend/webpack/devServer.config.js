@@ -19,18 +19,22 @@ export default {
       ...loaders,
       {
         test: /\.css$/,
-        exclude: /node_modules/,
+        // exclude: /node_modules/,
+        include: [
+          resolve(__dirname, "../src"),
+          resolve(__dirname, "../node_modules/react-notifications/lib"),
+        ],
         loader: combine([
           {
             loader: 'style'
           },
           {
             loader: 'css',
-            query: {
-              modules: true,
-              sourceMap: true,
-              importLoaders: 1
-            }
+            // query: {
+            //   modules: true,
+            //   sourceMap: true,
+            //   importLoaders: 1
+            // }
           },
           {
             loader: 'postcss'
