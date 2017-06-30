@@ -24,7 +24,7 @@ export const loaders = [
   },
   {
     test: /\.eot(\?[a-z0-9=&.]+)?$/,
-    loader: 'file'
+    loader: 'url'
   },
   {
     test: /\.woff2?(\?[a-z0-9=&.]+)?$/,
