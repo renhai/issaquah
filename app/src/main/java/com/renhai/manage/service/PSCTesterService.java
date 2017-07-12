@@ -17,14 +17,9 @@ public class PSCTesterService {
 
 	@PostConstruct
 	private void init() {
-		pscTesterRepository.save(
-			Tester.builder()
-				.name("任海")
-				.account("myrenhai")
-				.gender(Tester.Gender.M)
-				.id("00012")
-				.idNo("299492934992394")
-				.build()
-		);
+	}
+
+	public void saveTester(Tester tester) {
+		pscTesterRepository.save(tester);
 	}
 }

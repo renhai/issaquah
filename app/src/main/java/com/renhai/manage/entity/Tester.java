@@ -15,6 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ToString
 @Table(name = "tester")
 public class Tester {
 
@@ -28,7 +29,6 @@ public class Tester {
 	@NotNull
 	private String account;
 	/** 性别 */
-	@NotNull
 	@Enumerated(EnumType.STRING)
 	@Column(length = 1)
 	private Gender gender;
@@ -55,7 +55,7 @@ public class Tester {
 	private String dialect;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date cnTestDate;
-	private Integer cnScore;
+	private Double cnScore;
 	@Enumerated(EnumType.STRING)
 	private Level level;
 	@Enumerated(EnumType.STRING)
@@ -84,15 +84,59 @@ public class Tester {
 	private String note;
 
 	public enum Gender {
-		M, F
+		M("男"), F("女");
+
+		@Getter
+		private String text;
+		Gender(String text) {
+			this.text = text;
+		}
+
+		public static Gender fromText(String text) {
+			for (Gender gender : Gender.values()) {
+				if (gender.text.equals(text)) {
+					return gender;
+				}
+			}
+			return null;
+		}
 	}
 
 	public enum Level {
-		PROVINCE, NATIONAL
+		PROVINCE("省级"), NATIONAL("国家级");
+		@Getter
+		private String text;
+		Level(String text) {
+			this.text = text;
+		}
+
+		public static Level fromText(String text) {
+			for (Level level : Level.values()) {
+				if (level.text.equals(text)) {
+					return level;
+				}
+			}
+			return null;
+		}
 	}
 
 	public enum Grade {
-		A, B, C, D, EXPERT
+		A("A类测试员"), B("B类测试员"), C("C类测试员"), D("D类测试员"), EXPERT("专家测试员");
+
+		@Getter
+		private String text;
+		Grade(String text) {
+			this.text = text;
+		}
+
+		public static Grade fromText(String text) {
+			for (Grade grade : Grade.values()) {
+				if (grade.text.equals(text)) {
+					return grade;
+				}
+			}
+			return null;
+		}
 	}
 
 	public enum Status {
