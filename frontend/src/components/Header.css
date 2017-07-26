@@ -1,3 +1,7 @@
-.menuOpen {
-  display: flex
+/*.menuOpen {*/
+  /*display: flex*/
+/*}*/
+
+.navbar {
+  margin-bottom: 0;
 }

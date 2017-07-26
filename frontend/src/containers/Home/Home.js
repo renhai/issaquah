@@ -1,49 +1,66 @@
 import React from 'react';
 // import Helmet from 'react-helmet';
 import {injectIntl} from 'react-intl';
+import {connect} from 'react-redux';
 import {Table} from 'react-bootstrap';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
+import {loadTesters} from '../../actions/home';
 
 // import className from 'classnames/bind';
 
 // const cx = className.bind(require('./Home.css'));
 
+const stateToProps = (state, ownProps) => ({
+  testers: state.home.testers
+});
+
+const actionToProps = {
+  onLoad: loadTesters
+};
+
 @injectIntl
+@connect(stateToProps, actionToProps)
 export default class Home extends React.Component {
+  props: {
+    testers: Array,
+    onLoad: Function
+  }
 
   componentDidMount() {
     NotificationManager.error('Warning message', 'Close after 3000ms', 3000);
+    this.props.onLoad && this.props.onLoad();
   }
 
   render() {
     const rows = [];
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < this.props.testers.length; i++) {
+      const tester = this.props.testers[i];
       rows.push(
-        <tr>
-          <td>1</td>
-          <td>Table cell</td>
-          <td>Table cell</td>
-          <td>Table cell</td>
-          <td>Table cell</td>
-          <td>Table cell</td>
-          <td>Table cell</td>
-          <td>Table cell</td>
-          <td>Table cell</td>
-          <td>Table cell</td>
-          <td>Table cell</td>
-          <td>Table cell</td>
-          <td>Table cell</td>
-          <td>Table cell</td>
-          <td>Table cell</td>
-          <td>Table cell</td>
-          <td>Table cell</td>
-          <td>Table cell</td>
-          <td>Table cell</td>
-          <td>Table cell</td>
-          <td>Table cell</td>
-          <td>Table cell</td>
-          <td>Table cell</td>
-          <td>Table cell</td>
+        <tr key={`tester-row-${i}`}>
+          <td>{i + 1}</td>
+          <td>{tester.name}</td>
+          <td>{tester.account}</td>
+          <td>{tester.gender}</td>
+          <td>{tester.id}</td>
+          <td>{tester.idNo}</td>
+          <td>{tester.education}</td>
+          <td>{tester.jobTitle}</td>
+          <td>{tester.occupation}</td>
+          <td>{tester.workUnit}</td>
+          <td>{tester.zipCode}</td>
+          <td>{tester.workAddress}</td>
+          <td>{tester.workPhone}</td>
+          <td>{tester.homePhone}</td>
+          <td>{tester.cellPhone}</td>
+          <td>{tester.telMobile}</td>
+          <td>{tester.email}</td>
+          <td>{tester.dialect}</td>
+          <td>{tester.cnTestDate}</td>
+          <td>{tester.cnScore}</td>
+          <td>{tester.level}</td>
+          <td>{tester.grade}</td>
+          <td>{tester.bankName}</td>
+          <td>{tester.bankAccount}</td>
         </tr>
       );
     }
@@ -73,9 +90,9 @@ export default class Home extends React.Component {
                   <th>邮箱</th>
                   <th>Dialect</th>
                   <th>CNTestDate</th>
+                  <th>CNScore</th>
                   <th>测试员等级</th>
                   <th>类别</th>
-                  <th>等级</th>
                   <th>银行</th>
                   <th>账户</th>
                 </tr>

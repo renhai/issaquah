@@ -3,6 +3,8 @@ import React from 'react';
 // import className from 'classnames/bind';
 // import ChangeLocale from './ChangeLocale';
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
+import LoadingBar from 'react-redux-loading-bar';
+import './Header.css';
 
 // const cx = className.bind(require('./Header.css'));
 
@@ -27,6 +29,7 @@ export default class Header extends React.Component {
 
     return (
       <header>
+        <LoadingBar style={{zIndex: 1, backgroundColor: '#649f2b'}} />
         <Navbar fluid>
           <Navbar.Header>
             <Navbar.Brand>

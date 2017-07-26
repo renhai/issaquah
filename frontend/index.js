@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 require('babel-core/register');
 const Express = require('express');
+const proxy = require('express-http-proxy');
+const url = require('url');
 const history = require('connect-history-api-fallback');
 const path = require('path');
 const api = require('./api/index');
@@ -10,6 +12,12 @@ const app = new Express();
 
 app.use('/api', api);
 app.use(history());
+config.api && app.use(proxy(`${config.api.host}:${config.api.port}`, {
+  filter: req => {
+    const path = url.parse(req.url).path;
+    return path.indexOf('/api') === 0;
+  }
+}));
 config.development && app.use(require('./webpack/devServer'));
 app.use(Express.static(path.join('static')));
 

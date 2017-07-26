@@ -47,21 +47,35 @@ public class Tester {
 	private String zipCode;
 	/** 工作地址 */
 	private String workAddress;
+	/** 办公电话 */
 	private String workPhone;
+	/** 工作地址 */
 	private String homePhone;
+	/** 手机 */
 	private String cellPhone;
+	/** TelMobile */
 	private String telMobile;
+	/** 邮箱 */
 	private String email;
+	/** 方言 */
 	private String dialect;
+	/** CNTestDate */
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date cnTestDate;
+	/** CNScore */
 	private Double cnScore;
 	@Enumerated(EnumType.STRING)
+	/** 测试员等级 */
 	private Level level;
+	/** 类别 */
 	@Enumerated(EnumType.STRING)
 	private Grade grade;
+	/** 银行 */
 	private String bankName;
+	/** 账户 */
 	private String bankAccount;
+
+
 	/** 生日 */
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dob;
@@ -104,6 +118,7 @@ public class Tester {
 
 	public enum Level {
 		PROVINCE("省级"), NATIONAL("国家级");
+
 		@Getter
 		private String text;
 		Level(String text) {
