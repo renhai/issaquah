@@ -1,3 +1,7 @@
 .title-color {
   color: #1f99d3;
 }
+
+table tr td, th {
+  white-space: nowrap;
+}

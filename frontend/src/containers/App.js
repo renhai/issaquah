@@ -2,6 +2,7 @@ import React from 'react';
 import Helmet from 'react-helmet';
 import { IntlProvider } from 'react-intl';
 import { connect } from 'react-redux';
+import {NotificationContainer} from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
 import { Header, Footer } from '../components/index';
 import messages from '../messages/index';
@@ -33,6 +34,7 @@ export default class App extends React.Component {
               {children}
             </div>
             <Footer />
+            <NotificationContainer />
           </div>
         </div>
       </IntlProvider>

@@ -21,6 +21,7 @@ export default {
         include: [
           resolve(__dirname, "../src"),
           resolve(__dirname, "../node_modules/react-notifications/lib"),
+          resolve(__dirname, '../node_modules/react-bootstrap-table'),
         ],
         loader: ExtractTextPlugin.extract(
           'style',

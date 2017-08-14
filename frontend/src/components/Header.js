@@ -2,7 +2,7 @@ import React from 'react';
 // import { IndexLink, Link } from 'react-router';
 // import className from 'classnames/bind';
 // import ChangeLocale from './ChangeLocale';
-import {Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
+import {Navbar, Nav, NavItem} from 'react-bootstrap';
 import LoadingBar from 'react-redux-loading-bar';
 import './Header.css';
 
@@ -40,18 +40,10 @@ export default class Header extends React.Component {
           <Navbar.Collapse>
             <Nav>
               <NavItem eventKey={1} href="/">首页</NavItem>
-              <NavItem eventKey={2} href="/counter">第二个页面</NavItem>
-              <NavDropdown eventKey={3} title="Dropdown" id="basic-nav-dropdown">
-                <MenuItem eventKey={3.1}>Action</MenuItem>
-                <MenuItem eventKey={3.2}>Another action</MenuItem>
-                <MenuItem eventKey={3.3}>Something else here</MenuItem>
-                <MenuItem divider />
-                <MenuItem eventKey={3.3}>Separated link</MenuItem>
-              </NavDropdown>
+              <NavItem eventKey={2} href="#">About Me</NavItem>
             </Nav>
             <Nav pullRight>
-              <NavItem eventKey={1} href="#">Link Right</NavItem>
-              <NavItem eventKey={2} href="#">Link Right</NavItem>
+              <NavItem eventKey={1} href="#">Help</NavItem>
             </Nav>
           </Navbar.Collapse>
         </Navbar>

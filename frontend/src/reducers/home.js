@@ -3,7 +3,9 @@
  */
 
 const initialState = {
-  testers: []
+  testers: [],
+  sortName: undefined,
+  sortOrder: undefined,
 };
 
 export default function reducer(state = initialState, {type, payload}) {
@@ -11,8 +13,33 @@ export default function reducer(state = initialState, {type, payload}) {
     case 'FETCH_TESTERS_SUCCESS':
       return {
         ...state,
-        testers: payload.data
+        testers: payload.data.testers,
+        sortName: payload.data.sortName,
+        sortOrder: payload.data.sortOrder
       };
+    case 'EDIT_CELL_SUCCESS': {
+      const testers = state.testers;
+      const newTesters = [];
+      for (const value of testers) {
+        if (value.id === payload.data.id) {
+          newTesters.push(payload.data);
+        } else {
+          newTesters.push(value);
+        }
+      }
+      return {
+        ...state,
+        testers: newTesters
+      };
+    }
+    case 'SORT_CHANGE_SUCCESS':
+      return {
+        ...state,
+        testers: payload.data.testers,
+        sortName: payload.data.sortName,
+        sortOrder: payload.data.sortOrder
+      };
+
     default:
       return state;
   }
