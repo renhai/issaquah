@@ -2,21 +2,28 @@ package com.renhai.manage.web;
 
 import com.renhai.manage.entity.Tester;
 import com.renhai.manage.service.PSCTesterService;
+import com.renhai.manage.web.dto.ColumnEnum;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by hai on 7/11/17.
@@ -75,6 +82,64 @@ public class ExcelController {
 			pscTesterService.saveTester(tester);
 		}
 		return ResponseEntity.ok().body("success");
+	}
+
+	@GetMapping("/api/download")
+	public void download(@RequestParam(value = "fields") String[] fields, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Workbook excel = createExcel(fields);
+		String fileName = String.format("%s.xlsx", RandomStringUtils.randomAlphabetic(8));
+		response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+		response.setContentType("application/octet-stream") ;
+		OutputStream out = response.getOutputStream() ;
+		excel.write(out) ;
+		out.flush();
+		out.close();
+	}
+
+	private Workbook createExcel(String[] fields) throws IllegalAccessException {
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet sheet = workbook.createSheet("Sheet1");
+//		String[] fields = {"name", "account", "gender", "id", "cnTestDate"};
+		Row header = sheet.createRow(0);
+		for (int i = 0; i < fields.length; i ++) {
+			Cell cell = header.createCell(i);
+			ColumnEnum columnEnum = ColumnEnum.fromName(fields[i]);
+			cell.setCellValue(columnEnum.getDisplayName());
+		}
+
+		List<Tester> testers = pscTesterService.getAllTesters("account", "asc");
+
+		CellStyle cellStyle = workbook.createCellStyle();
+		CreationHelper createHelper = workbook.getCreationHelper();
+		cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("yyyymmdd"));
+
+		int rowNum = 1;
+		for (Tester tester : testers) {
+			Row row = sheet.createRow(rowNum ++);
+			int colNum = 0;
+			for (String fieldName : fields) {
+				Object value = FieldUtils.readDeclaredField(tester, fieldName, true);
+				if (value == null) {
+					row.createCell(colNum ++).setCellValue("");
+				} else if (value instanceof Tester.Gender) {
+					row.createCell(colNum ++).setCellValue(((Tester.Gender) value).getText());
+				} else if (value instanceof Tester.Level) {
+					row.createCell(colNum ++).setCellValue(((Tester.Level) value).getText());
+				} else if (value instanceof Tester.Grade) {
+					row.createCell(colNum ++).setCellValue(((Tester.Grade) value).getText());
+				} else if (value instanceof String) {
+					row.createCell(colNum ++).setCellValue((String) value);
+				} else if (value instanceof Date) {
+					Cell cell = row.createCell(colNum ++);
+					cell.setCellValue((Date) value);
+					cell.setCellStyle(cellStyle);
+				} else {
+					row.createCell(colNum ++).setCellValue(value.toString());
+				}
+			}
+		}
+
+		return workbook;
 	}
 
 }

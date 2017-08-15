@@ -11,13 +11,6 @@ export function loadTesters() {
 }
 
 export function editCell(row, fieldName, value) {
-  // return (dispatch, getState) =>
-  //   dispatch({type: 'EDIT_CELL',
-  //     payload: axios.put(`/api/testers/${row.id}`, {
-  //       fieldName,
-  //       value
-  //     })
-  //   });
   return (dispatch, getState) => {
     dispatch({ type: 'EDIT_CELL_LOADING' });
     axios.put(`/api/testers/${row.id}`, {
@@ -35,5 +28,10 @@ export function editCell(row, fieldName, value) {
 export function sortChange(sortName, sortOrder) {
   return (dispatch, getState) =>
     dispatch({type: 'SORT_CHANGE', payload: axios.get(`/api/testers?sortName=${sortName}&sortOrder=${sortOrder}`)});
+}
+
+export function checkDisplayField(checkboxName, checked) {
+  return (dispatch, getState) =>
+    dispatch({type: 'CHECK_DISPLAY_FIELD', payload: {checkboxName, checked}});
 }
 
