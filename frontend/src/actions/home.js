@@ -35,3 +35,19 @@ export function checkDisplayField(checkboxName, checked) {
     dispatch({type: 'CHECK_DISPLAY_FIELD', payload: {checkboxName, checked}});
 }
 
+export function uploadExcel(excel) {
+  return (dispatch, getState) => {
+    dispatch({type: 'UPLOAD_EXCEL_LOADING'});
+    const data = new FormData();
+    data.append('file', excel);
+    axios.post('/api/upload', data)
+      .then((response) => {
+        dispatch({type: 'UPLOAD_EXCEL_SUCCESS', payload: response});
+        window.location.reload();
+      }).catch((error) => {
+        dispatch({type: 'UPLOAD_EXCEL_ERROR', payload: error});
+        NotificationManager.error('Warning message', error.response.data.error, 3000);
+      });
+  };
+}
+

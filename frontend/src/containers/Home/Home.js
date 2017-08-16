@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {Checkbox, Button, ButtonGroup} from 'react-bootstrap';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/css/react-bootstrap-table.css';
-import {loadTesters, editCell, sortChange, checkDisplayField} from '../../actions/home';
+import {loadTesters, editCell, sortChange, checkDisplayField, uploadExcel} from '../../actions/home';
 import './Home.css';
 
 
@@ -20,6 +20,7 @@ const actionToProps = {
   onCellEdit: editCell,
   onSortChange: sortChange,
   onDisplayFieldCheck: checkDisplayField,
+  onUpload: uploadExcel,
 };
 
 @injectIntl
@@ -34,6 +35,7 @@ export default class Home extends React.Component {
     sortOrder: ?string,
     displayFields: Array,
     onDisplayFieldCheck: Function,
+    onUpload: Function,
   }
 
   constructor(props) {
@@ -42,10 +44,19 @@ export default class Home extends React.Component {
     this.getTableWidth = this.getTableWidth.bind(this);
     this.getDownloadUrl = this.getDownloadUrl.bind(this);
     this.createCustomButtonGroup = this.createCustomButtonGroup.bind(this);
+    this.onClickUpload = this.onClickUpload.bind(this);
   }
 
   componentDidMount() {
     this.props.onLoad && this.props.onLoad();
+  }
+
+  onClickUpload(e) {
+    console.log(this.excelInput.files[0]);
+    if (this.excelInput.files && this.excelInput.files.length > 0) {
+      this.props.onUpload(this.excelInput.files[0]);
+    }
+    this.excelInput.value = null;
   }
 
   handleCheckboxOnChange(event) {
@@ -147,6 +158,10 @@ export default class Home extends React.Component {
           <div className="col-md-1">
             <Checkbox value="bankName" defaultChecked onChange={this.handleCheckboxOnChange}>银行</Checkbox>
             <Checkbox value="bankAccount" defaultChecked onChange={this.handleCheckboxOnChange}>账户</Checkbox>
+          </div>
+          <div className="col-md-6">
+            <input id="excel-file" type="file" ref={(input) => { this.excelInput = input; }} />
+            <button id="upload-excel" type="button" className="btn btn-primary" onClick={this.onClickUpload}>Upload</button>
           </div>
 
         </div>
