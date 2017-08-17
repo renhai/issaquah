@@ -1,10 +1,13 @@
 import React from 'react';
 import {injectIntl} from 'react-intl';
 import {connect} from 'react-redux';
-import {Checkbox, Button, ButtonGroup, Collapse} from 'react-bootstrap';
+import { Button, ButtonGroup, Collapse} from 'react-bootstrap';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/css/react-bootstrap-table.css';
-import {loadTesters, editCell, sortChange, checkDisplayField, uploadExcel} from '../../actions/home';
+import 'react-bootstrap-multiselect/css/bootstrap-multiselect.css';
+import Multiselect from 'react-bootstrap-multiselect';
+import {loadTesters, editCell, sortChange, uploadExcel} from '../../actions/home';
+import {checkDisplayField, selectAllFields, deselectAllFields} from '../../actions/settings';
 import './Home.css';
 
 
@@ -12,7 +15,7 @@ const stateToProps = (state, ownProps) => ({
   testers: state.home.testers,
   sortName: state.home.sortName,
   sortOrder: state.home.sortOrder,
-  displayFields: state.home.displayFields,
+  displayFields: state.settings.displayFields,
 });
 
 const actionToProps = {
@@ -21,6 +24,8 @@ const actionToProps = {
   onSortChange: sortChange,
   onDisplayFieldCheck: checkDisplayField,
   onUpload: uploadExcel,
+  onSelectAllField: selectAllFields,
+  onDeselectAllField: deselectAllFields,
 };
 
 @injectIntl
@@ -36,11 +41,12 @@ export default class Home extends React.Component {
     displayFields: Array,
     onDisplayFieldCheck: Function,
     onUpload: Function,
+    onSelectAllField: Function,
+    onDeselectAllField: Function
   }
 
   constructor(props) {
     super(props);
-    this.handleCheckboxOnChange = this.handleCheckboxOnChange.bind(this);
     this.getTableWidth = this.getTableWidth.bind(this);
     this.getDownloadUrl = this.getDownloadUrl.bind(this);
     this.createCustomButtonGroup = this.createCustomButtonGroup.bind(this);
@@ -53,15 +59,10 @@ export default class Home extends React.Component {
   }
 
   onClickUpload(e) {
-    console.log(this.excelInput.files[0]);
     if (this.excelInput.files && this.excelInput.files.length > 0) {
       this.props.onUpload(this.excelInput.files[0]);
     }
     this.excelInput.value = null;
-  }
-
-  handleCheckboxOnChange(event) {
-    this.props.onDisplayFieldCheck(event.target.value, event.target.checked);
   }
 
   getTableWidth() {
@@ -88,7 +89,7 @@ export default class Home extends React.Component {
       { props.insertBtn }
       { props.deleteBtn }
       <Button bsClass="btn btn-primary" bsStyle="link" href={this.getDownloadUrl()}>Download</Button>
-      <Button bsStyle="success" onClick={(e) => this.setState({open: !this.state.open })}>设置</Button>
+      <Button bsStyle="success" onClick={(e) => this.setState({open: !this.state.open })}>更多</Button>
     </ButtonGroup>
 
   render() {
@@ -116,7 +117,7 @@ export default class Home extends React.Component {
     };
     const tableWidth = this.getTableWidth();
     const cols = [];
-    const checkboxes = [];
+    const multiSelectData = [];
     for (const row of this.props.displayFields) {
       if (row.show) {
         cols.push(
@@ -124,9 +125,7 @@ export default class Home extends React.Component {
         );
       }
       if (row.field !== 'id') {
-        checkboxes.push(
-          <Checkbox inline key={row.field} value={row.field} checked={row.show} onChange={this.handleCheckboxOnChange}>{row.displayName}</Checkbox>
-        );
+        multiSelectData.push({value: row.field, selected: row.show, label: row.displayName});
       }
     }
 
@@ -135,7 +134,22 @@ export default class Home extends React.Component {
         <Collapse in={this.state.open}>
           <div className="row">
             <div className="col-md-4">
-              {checkboxes}
+              <Multiselect
+                data={multiSelectData}
+                multiple
+                maxHeight={200}
+                buttonText={(_options, _select) => '选择列'}
+                onChange={(option, checked) => {
+                  this.props.onDisplayFieldCheck(option.val(), checked);
+                }}
+                includeSelectAllOption
+                onSelectAll={() => {
+                  this.props.onSelectAllField();
+                }}
+                onDeselectAll={() => {
+                  this.props.onDeselectAllField();
+                }}
+              />
             </div>
             <div className="col-md-4">
               <input id="excel-file" type="file" ref={(input) => { this.excelInput = input; }} />

@@ -30,11 +30,6 @@ export function sortChange(sortName, sortOrder) {
     dispatch({type: 'SORT_CHANGE', payload: axios.get(`/api/testers?sortName=${sortName}&sortOrder=${sortOrder}`)});
 }
 
-export function checkDisplayField(checkboxName, checked) {
-  return (dispatch, getState) =>
-    dispatch({type: 'CHECK_DISPLAY_FIELD', payload: {checkboxName, checked}});
-}
-
 export function uploadExcel(excel) {
   return (dispatch, getState) => {
     dispatch({type: 'UPLOAD_EXCEL_LOADING'});

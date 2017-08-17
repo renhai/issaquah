@@ -25,7 +25,7 @@ const composers = compose(
 const store = createStore(reducers, undefined, composers);
 persistStore(store, {
   // Add reducer name that has to be exclude from persist.
-  whitelist: ['locale'],
+  whitelist: ['locale', 'settings'],
   storage: localForage,
 });
 

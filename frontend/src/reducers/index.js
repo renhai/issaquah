@@ -5,6 +5,7 @@ import locale from './locale';
 import counter from './counter';
 import todo from './todo';
 import home from './home';
+import settings from './settings';
 
 export default combineReducers({
   loadingBar: loadingBarReducer,
@@ -13,4 +14,5 @@ export default combineReducers({
   counter,
   todo,
   home,
+  settings
 });

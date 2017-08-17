@@ -104,8 +104,9 @@
     "webpack-hot-middleware": "2.13.1",
     "react-bootstrap": "0.31.0",
     "react-notifications": "1.4.3",
-    "react-dropzone": "3.13.3",
     "react-redux-loading-bar": "2.9.2",
-    "react-bootstrap-table": "4.0.0"
+    "react-bootstrap-table": "4.0.0",
+    "react-bootstrap-multiselect": "2.4.1",
+    "bootstrap": "3.3.7"
   }
 }

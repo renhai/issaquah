@@ -24,6 +24,7 @@ export default {
           resolve(__dirname, "../src"),
           resolve(__dirname, "../node_modules/react-notifications/lib"),
           resolve(__dirname, '../node_modules/react-bootstrap-table'),
+          resolve(__dirname, '../node_modules/react-bootstrap-multiselect'),
         ],
         loader: combine([
           {
