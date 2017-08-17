@@ -2,10 +2,12 @@ package com.renhai.manage.web;
 
 import com.renhai.manage.entity.Tester;
 import com.renhai.manage.service.PSCTesterService;
+import com.renhai.manage.service.dto.TesterDto;
 import com.renhai.manage.web.dto.ColumnEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -96,7 +99,7 @@ public class ExcelController {
 		out.close();
 	}
 
-	private Workbook createExcel(String[] fields) throws IllegalAccessException {
+	private Workbook createExcel(String[] fields) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet sheet = workbook.createSheet("Sheet1");
 //		String[] fields = {"name", "account", "gender", "id", "cnTestDate"};
@@ -107,33 +110,36 @@ public class ExcelController {
 			cell.setCellValue(columnEnum.getDisplayName());
 		}
 
-		List<Tester> testers = pscTesterService.getAllTesters("account", "asc");
+		List<TesterDto> testers = pscTesterService.getAllTesters("account", "asc");
 
-		CellStyle cellStyle = workbook.createCellStyle();
-		CreationHelper createHelper = workbook.getCreationHelper();
-		cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("yyyymmdd"));
+//		CellStyle cellStyle = workbook.createCellStyle();
+//		CreationHelper createHelper = workbook.getCreationHelper();
+//		cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("yyyymmdd"));
 
 		int rowNum = 1;
-		for (Tester tester : testers) {
+		for (TesterDto tester : testers) {
 			Row row = sheet.createRow(rowNum ++);
 			int colNum = 0;
 			for (String fieldName : fields) {
-				Object value = FieldUtils.readDeclaredField(tester, fieldName, true);
+//				Object value = FieldUtils.readDeclaredField(tester, fieldName, true);
+				Object value = MethodUtils.invokeMethod(tester, "get"+ org.apache.commons.lang3.StringUtils.capitalize(fieldName));
 				if (value == null) {
 					row.createCell(colNum ++).setCellValue("");
-				} else if (value instanceof Tester.Gender) {
-					row.createCell(colNum ++).setCellValue(((Tester.Gender) value).getText());
-				} else if (value instanceof Tester.Level) {
-					row.createCell(colNum ++).setCellValue(((Tester.Level) value).getText());
-				} else if (value instanceof Tester.Grade) {
-					row.createCell(colNum ++).setCellValue(((Tester.Grade) value).getText());
-				} else if (value instanceof String) {
-					row.createCell(colNum ++).setCellValue((String) value);
-				} else if (value instanceof Date) {
-					Cell cell = row.createCell(colNum ++);
-					cell.setCellValue((Date) value);
-					cell.setCellStyle(cellStyle);
-				} else {
+				}
+//				else if (value instanceof Tester.Gender) {
+//					row.createCell(colNum ++).setCellValue(((Tester.Gender) value).getText());
+//				} else if (value instanceof Tester.Level) {
+//					row.createCell(colNum ++).setCellValue(((Tester.Level) value).getText());
+//				} else if (value instanceof Tester.Grade) {
+//					row.createCell(colNum ++).setCellValue(((Tester.Grade) value).getText());
+//				} else if (value instanceof String) {
+//					row.createCell(colNum ++).setCellValue((String) value);
+//				} else if (value instanceof Date) {
+//					Cell cell = row.createCell(colNum ++);
+//					cell.setCellValue((Date) value);
+//					cell.setCellStyle(cellStyle);
+//				}
+				else {
 					row.createCell(colNum ++).setCellValue(value.toString());
 				}
 			}

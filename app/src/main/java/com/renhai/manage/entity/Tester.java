@@ -155,7 +155,22 @@ public class Tester {
 	}
 
 	public enum Status {
-		IDLE, BUSY
+		IDLE("空闲"), BUSY("忙碌");
+
+		@Getter
+		private String text;
+		Status(String text) {
+			this.text = text;
+		}
+
+		public static Status fromText(String text) {
+			for (Status status : Status.values()) {
+				if (status.text.equals(text)) {
+					return status;
+				}
+			}
+			return null;
+		}
 	}
 }
 

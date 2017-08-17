@@ -1,6 +1,6 @@
 package com.renhai.manage.web.dto;
 
-import com.renhai.manage.entity.Tester;
+import com.renhai.manage.service.dto.TesterDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class TesterResponseDto {
-	private List<Tester> testers;
+	private List<TesterDto> testers;
 	private String sortName;
 	private String sortOrder;
 }

@@ -30,7 +30,16 @@ public enum ColumnEnum {
 	level("测试员等级"),
 	grade("类别"),
 	bankName("银行"),
-	bankAccount("账户");
+	bankAccount("账户"),
+	dob("生日"),
+	trainingYear("培训年"),
+	testCount("测试量"),
+	status("状态"),
+	score("成绩"),
+	backboneClass("骨干班次"),
+	testCenter("测试分中心"),
+	termNo("期数"),
+	note("备注");
 
 	@Getter
 	private String displayName;

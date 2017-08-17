@@ -20,7 +20,7 @@ export function editCell(row, fieldName, value) {
       dispatch({ type: 'EDIT_CELL_SUCCESS', payload: response });
     }).catch((error) => {
       dispatch({ type: 'EDIT_CELL_ERROR', payload: error });
-      NotificationManager.error('Warning message', error.response.data.error, 3000);
+      NotificationManager.error('Warning message', error.response.data.message, 3000);
     });
   };
 }
@@ -46,7 +46,7 @@ export function uploadExcel(excel) {
         window.location.reload();
       }).catch((error) => {
         dispatch({type: 'UPLOAD_EXCEL_ERROR', payload: error});
-        NotificationManager.error('Warning message', error.response.data.error, 3000);
+        NotificationManager.error('Warning message', error.response.data.message, 3000);
       });
   };
 }

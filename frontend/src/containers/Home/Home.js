@@ -1,7 +1,7 @@
 import React from 'react';
 import {injectIntl} from 'react-intl';
 import {connect} from 'react-redux';
-import {Checkbox, Button, ButtonGroup} from 'react-bootstrap';
+import {Checkbox, Button, ButtonGroup, Collapse} from 'react-bootstrap';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/css/react-bootstrap-table.css';
 import {loadTesters, editCell, sortChange, checkDisplayField, uploadExcel} from '../../actions/home';
@@ -45,6 +45,7 @@ export default class Home extends React.Component {
     this.getDownloadUrl = this.getDownloadUrl.bind(this);
     this.createCustomButtonGroup = this.createCustomButtonGroup.bind(this);
     this.onClickUpload = this.onClickUpload.bind(this);
+    this.state = {};
   }
 
   componentDidMount() {
@@ -87,6 +88,7 @@ export default class Home extends React.Component {
       { props.insertBtn }
       { props.deleteBtn }
       <Button bsClass="btn btn-primary" bsStyle="link" href={this.getDownloadUrl()}>Download</Button>
+      <Button bsStyle="success" onClick={(e) => this.setState({open: !this.state.open })}>设置</Button>
     </ButtonGroup>
 
   render() {
@@ -114,57 +116,33 @@ export default class Home extends React.Component {
     };
     const tableWidth = this.getTableWidth();
     const cols = [];
+    const checkboxes = [];
     for (const row of this.props.displayFields) {
       if (row.show) {
         cols.push(
           <TableHeaderColumn key={row.field} width={`${row.width}px`} isKey={row.field === 'id'} dataField={row.field} dataSort>{row.displayName}</TableHeaderColumn>
         );
       }
+      if (row.field !== 'id') {
+        checkboxes.push(
+          <Checkbox inline key={row.field} value={row.field} checked={row.show} onChange={this.handleCheckboxOnChange}>{row.displayName}</Checkbox>
+        );
+      }
     }
 
     return (
-      <div>
-        <div className="row">
-          <div className="col-md-1">
-            <Checkbox value="name" defaultChecked onChange={this.handleCheckboxOnChange}>姓名</Checkbox>
-            <Checkbox value="gender" defaultChecked onChange={this.handleCheckboxOnChange}>性别</Checkbox>
-            <Checkbox value="account" defaultChecked onChange={this.handleCheckboxOnChange}>账号</Checkbox>
-            <Checkbox value="idNo" defaultChecked onChange={this.handleCheckboxOnChange}>身份证</Checkbox>
+      <div style={{marginTop: '15px'}}>
+        <Collapse in={this.state.open}>
+          <div className="row">
+            <div className="col-md-4">
+              {checkboxes}
+            </div>
+            <div className="col-md-4">
+              <input id="excel-file" type="file" ref={(input) => { this.excelInput = input; }} />
+              <button id="upload-excel" type="button" className="btn btn-primary" onClick={this.onClickUpload}>Upload</button>
+            </div>
           </div>
-          <div className="col-md-1">
-            <Checkbox value="education" defaultChecked onChange={this.handleCheckboxOnChange}>文化程度</Checkbox>
-            <Checkbox value="jobTitle" defaultChecked onChange={this.handleCheckboxOnChange}>职称</Checkbox>
-            <Checkbox value="occupation" defaultChecked onChange={this.handleCheckboxOnChange}>职务</Checkbox>
-            <Checkbox value="workUnit" defaultChecked onChange={this.handleCheckboxOnChange}>工作单位</Checkbox>
-          </div>
-          <div className="col-md-1">
-            <Checkbox value="zipCode" defaultChecked onChange={this.handleCheckboxOnChange}>邮编</Checkbox>
-            <Checkbox value="workAddress" defaultChecked onChange={this.handleCheckboxOnChange}>地址</Checkbox>
-            <Checkbox value="workPhone" defaultChecked onChange={this.handleCheckboxOnChange}>办公电话</Checkbox>
-            <Checkbox value="homePhone" defaultChecked onChange={this.handleCheckboxOnChange}>家庭电话</Checkbox>
-          </div>
-          <div className="col-md-1">
-            <Checkbox value="cellPhone" defaultChecked onChange={this.handleCheckboxOnChange}>手机</Checkbox>
-            <Checkbox value="telMobile" defaultChecked onChange={this.handleCheckboxOnChange}>TelMobile</Checkbox>
-            <Checkbox value="email" defaultChecked onChange={this.handleCheckboxOnChange}>邮箱</Checkbox>
-            <Checkbox value="dialect" defaultChecked onChange={this.handleCheckboxOnChange}>Dialect</Checkbox>
-          </div>
-          <div className="col-md-1">
-            <Checkbox value="cnTestDate" defaultChecked onChange={this.handleCheckboxOnChange}>CNTestDate</Checkbox>
-            <Checkbox value="cnScore" defaultChecked onChange={this.handleCheckboxOnChange}>CNScore</Checkbox>
-            <Checkbox value="level" defaultChecked onChange={this.handleCheckboxOnChange}>测试员等级</Checkbox>
-            <Checkbox value="grade" defaultChecked onChange={this.handleCheckboxOnChange}>类别</Checkbox>
-          </div>
-          <div className="col-md-1">
-            <Checkbox value="bankName" defaultChecked onChange={this.handleCheckboxOnChange}>银行</Checkbox>
-            <Checkbox value="bankAccount" defaultChecked onChange={this.handleCheckboxOnChange}>账户</Checkbox>
-          </div>
-          <div className="col-md-6">
-            <input id="excel-file" type="file" ref={(input) => { this.excelInput = input; }} />
-            <button id="upload-excel" type="button" className="btn btn-primary" onClick={this.onClickUpload}>Upload</button>
-          </div>
-
-        </div>
+        </Collapse>
         <div className="row">
           <div className="col-md-12" style={{overflowX: 'scroll'}}>
             <BootstrapTable
