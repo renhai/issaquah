@@ -73,4 +73,11 @@ public class PSCTesterService {
 		Tester entity = pscTesterRepository.save(tester);
 		return new TesterDto(entity);
 	}
+
+	@Transactional
+	public void deleteTesters(String[] ids) {
+		for (String id : ids) {
+			pscTesterRepository.delete(id);
+		}
+	}
 }

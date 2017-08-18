@@ -1,6 +1,5 @@
 package com.renhai.manage.web;
 
-import com.renhai.manage.entity.Tester;
 import com.renhai.manage.service.PSCTesterService;
 import com.renhai.manage.service.dto.TesterDto;
 import com.renhai.manage.web.dto.TesterResponseDto;
@@ -35,5 +34,11 @@ public class TesterController {
 	public ResponseEntity update(@PathVariable String id, @Validated @RequestBody UpdateParamDto dto) throws Exception {
 		TesterDto result = pscTesterService.updateTester(id, dto.getFieldName(), dto.getValue());
 		return ResponseEntity.ok(result);
+	}
+
+	@DeleteMapping("/api/testers/{ids}")
+	public ResponseEntity delete(@PathVariable String[] ids) throws Exception {
+		pscTesterService.deleteTesters(ids);
+		return ResponseEntity.ok().build();
 	}
 }

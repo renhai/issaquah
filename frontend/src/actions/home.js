@@ -46,3 +46,14 @@ export function uploadExcel(excel) {
   };
 }
 
+export function deleteRows(rows) {
+  return (dispatch, getState) => {
+    axios.delete(`/api/testers/${rows.join()}`)
+      .then((response) => {
+        dispatch({type: 'FETCH_TESTERS', payload: axios.get('/api/testers')});
+      }).catch((error) => {
+        NotificationManager.error('Warning message', error.response.data.message, 3000);
+      });
+  };
+}
+
