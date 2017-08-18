@@ -3,6 +3,9 @@ package com.renhai.manage.service.dto;
 import com.renhai.manage.entity.Tester;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.Calendar;
 
 /**
  * Created by hai on 8/16/17.
@@ -110,6 +113,15 @@ public class TesterDto {
 
 	public String getDob() {
 		return tester.getDob() == null ? "" : DEFAULT_DATE_FORMAT.format(tester.getDob());
+	}
+
+	public Integer getAge() {
+		if (tester.getDob() == null) return null;
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(tester.getDob());
+		LocalDate dob = LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
+		LocalDate now = LocalDate.now();
+		return Period.between(dob, now).getYears();
 	}
 
 	public Integer getTrainingYear() {

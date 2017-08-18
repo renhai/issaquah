@@ -24,7 +24,7 @@ public class TesterController {
 
 	@GetMapping("/api/testers")
 	public ResponseEntity getAll(
-		@RequestParam(defaultValue = "account") String sortName,
+		@RequestParam(defaultValue = "id") String sortName,
 		@RequestParam(defaultValue = "asc") String sortOrder) throws Exception{
 		List<TesterDto> testers = pscTesterService.getAllTesters(sortName, sortOrder);
 		return ResponseEntity.ok(new TesterResponseDto(testers, sortName, sortOrder));

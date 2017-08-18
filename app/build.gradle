@@ -34,6 +34,7 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 	compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.16'
 	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
+	compile group: 'com.google.guava', name: 'guava', version: '22.0'
 	runtime('com.h2database:h2')
 	compileOnly('org.projectlombok:lombok')
 	testCompile('org.springframework.boot:spring-boot-starter-test')

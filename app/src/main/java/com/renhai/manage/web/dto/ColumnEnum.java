@@ -32,6 +32,7 @@ public enum ColumnEnum {
 	bankName("银行"),
 	bankAccount("账户"),
 	dob("生日"),
+	age("年龄"),
 	trainingYear("培训年"),
 	testCount("测试量"),
 	status("状态"),

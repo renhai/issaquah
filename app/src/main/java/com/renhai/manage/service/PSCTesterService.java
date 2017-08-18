@@ -1,5 +1,7 @@
 package com.renhai.manage.service;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Ordering;
 import com.renhai.manage.entity.Tester;
 import com.renhai.manage.repository.PSCTesterRepository;
 import com.renhai.manage.service.dto.TesterDto;
@@ -9,13 +11,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,8 +38,26 @@ public class PSCTesterService {
 	}
 
 	public List<TesterDto> getAllTesters(String sortName, String sortOrder) {
-		List<Tester> testers = IteratorUtils.toList(pscTesterRepository.findAll(new Sort(Sort.Direction.fromString(sortOrder), sortName)).iterator());
+//		List<Tester> testers = IteratorUtils.toList(pscTesterRepository.findAll(new Sort(Sort.Direction.fromString(sortOrder), sortName)).iterator());
+		List<Tester> testers = IteratorUtils.toList(pscTesterRepository.findAll().iterator());
 		List<TesterDto> result = testers.stream().map(tester -> new TesterDto(tester)).collect(Collectors.toList());
+		Ordering<TesterDto> ordering = Ordering.natural().nullsFirst().onResultOf(new Function<TesterDto, Comparable>() {
+			@Nullable
+			@Override
+			public Comparable apply(@Nullable TesterDto input) {
+				Object value = null;
+				try {
+					value = MethodUtils.invokeMethod(input, "get"+ StringUtils.capitalize(sortName));
+				} catch (Exception e) {
+					log.error(e.getMessage(), e);
+				}
+				return (Comparable) value;
+			}
+		});
+		if ("desc".equals(sortOrder)) {
+			ordering = ordering.reverse();
+		}
+		Collections.sort(result, ordering);
 		return result;
 	}
 

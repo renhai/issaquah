@@ -123,8 +123,18 @@ export default class Home extends React.Component {
     const multiSelectData = [];
     for (const row of this.props.displayFields) {
       if (row.show) {
+        const editable = !['age'].includes(row.field);
         cols.push(
-          <TableHeaderColumn key={row.field} width={`${row.width}px`} isKey={row.field === 'id'} dataField={row.field} dataSort>{row.displayName}</TableHeaderColumn>
+          <TableHeaderColumn
+            key={row.field}
+            width={`${row.width}px`}
+            isKey={row.field === 'id'}
+            dataField={row.field}
+            dataSort
+            editable={editable}
+          >
+            {row.displayName}
+          </TableHeaderColumn>
         );
       }
       if (row.field !== 'id') {
