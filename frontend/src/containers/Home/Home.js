@@ -123,7 +123,24 @@ export default class Home extends React.Component {
     const multiSelectData = [];
     for (const row of this.props.displayFields) {
       if (row.show) {
-        const editable = !['age'].includes(row.field);
+        let editable = !['age'].includes(row.field);
+        switch (row.field) {
+          case 'gender':
+            editable = { type: 'select', options: { values: ['男', '女'] } };
+            break;
+          case 'level':
+            editable = { type: 'select', options: { values: ['', '省级', '国家级'] } };
+            break;
+          case 'status':
+            editable = { type: 'select', options: { values: ['', '空闲', '忙碌'] } };
+            break;
+          case 'grade':
+            editable = { type: 'select', options: { values: ['', 'A类测试员', 'B类测试员', 'C类测试员', 'D类测试员', '专家测试员'] } };
+            break;
+          default:
+            break;
+        }
+
         cols.push(
           <TableHeaderColumn
             key={row.field}
