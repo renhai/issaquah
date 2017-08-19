@@ -114,7 +114,7 @@ export default class Home extends React.Component {
     const remote = (remoteObj) => {
       remoteObj.cellEdit = true;
       remoteObj.sort = true;
-      // remoteObj.insertRow = true;
+      remoteObj.insertRow = true;
       remoteObj.dropRow = true;
       return remoteObj;
     };
@@ -143,6 +143,10 @@ export default class Home extends React.Component {
           default:
             break;
         }
+        let filter = null;
+        if (row.field === 'name') {
+          filter = { type: 'TextFilter', delay: 1000 };
+        }
 
         cols.push(
           <TableHeaderColumn
@@ -152,6 +156,7 @@ export default class Home extends React.Component {
             dataField={row.field}
             dataSort
             editable={editable}
+            filter={filter}
           >
             {row.displayName}
           </TableHeaderColumn>
@@ -193,6 +198,7 @@ export default class Home extends React.Component {
         <div className="row">
           <div className="col-md-12" style={{overflowX: 'scroll'}}>
             <BootstrapTable
+              ref={(table) => { this.table = table; }}
               options={options}
               containerStyle={{width: `${tableWidth}px`}}
               cellEdit={cellEditProp}
