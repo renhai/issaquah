@@ -6,7 +6,7 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/css/react-bootstrap-table.css';
 import 'react-bootstrap-multiselect/css/bootstrap-multiselect.css';
 import Multiselect from 'react-bootstrap-multiselect';
-import {loadTesters, editCell, sortChange, uploadExcel, deleteRows} from '../../actions/home';
+import {loadTesters, editCell, sortChange, uploadExcel, deleteRows, addRow} from '../../actions/home';
 import {checkDisplayField, selectAllFields, deselectAllFields} from '../../actions/settings';
 import './Home.css';
 
@@ -27,6 +27,7 @@ const actionToProps = {
   onSelectAllField: selectAllFields,
   onDeselectAllField: deselectAllFields,
   onDeleteRows: deleteRows,
+  onAddRow: addRow,
 };
 
 @injectIntl
@@ -45,6 +46,7 @@ export default class Home extends React.Component {
     onSelectAllField: Function,
     onDeselectAllField: Function,
     onDeleteRows: Function,
+    onAddRow: Function,
   }
 
   constructor(props) {
@@ -107,6 +109,7 @@ export default class Home extends React.Component {
       sortOrder: this.props.sortOrder,
       btnGroup: this.createCustomButtonGroup,
       onDeleteRow: this.props.onDeleteRows,
+      onAddRow: this.props.onAddRow,
     };
     const remote = (remoteObj) => {
       remoteObj.cellEdit = true;

@@ -101,4 +101,8 @@ public class PSCTesterService {
 			pscTesterRepository.delete(id);
 		}
 	}
+
+	public boolean exists(String id) {
+		return pscTesterRepository.exists(id);
+	}
 }

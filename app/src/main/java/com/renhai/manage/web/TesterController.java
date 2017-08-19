@@ -2,13 +2,16 @@ package com.renhai.manage.web;
 
 import com.renhai.manage.service.PSCTesterService;
 import com.renhai.manage.service.dto.TesterDto;
+import com.renhai.manage.web.dto.CreateTesterDto;
 import com.renhai.manage.web.dto.TesterResponseDto;
 import com.renhai.manage.web.dto.UpdateParamDto;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import static com.google.common.base.Preconditions.*;
 
 import java.util.List;
 
@@ -40,5 +43,14 @@ public class TesterController {
 	public ResponseEntity delete(@PathVariable String[] ids) throws Exception {
 		pscTesterService.deleteTesters(ids);
 		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/api/testers")
+	public ResponseEntity create(@Validated @RequestBody CreateTesterDto dto) throws Exception {
+		checkArgument(StringUtils.isNotBlank(dto.getId()), "Id should not be empty!");
+		checkArgument(!pscTesterService.exists(dto.getId()), "Data already exists");
+
+		pscTesterService.saveTester(dto.toTester());
+		return ResponseEntity.ok("SUCCESS");
 	}
 }
