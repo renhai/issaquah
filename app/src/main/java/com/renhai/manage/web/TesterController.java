@@ -65,21 +65,21 @@ public class TesterController {
     }
 
     @PutMapping("/api/testers/{id}")
-    public ResponseEntity update(@PathVariable String id, @Validated @RequestBody UpdateParamDto dto) throws Exception {
+    public ResponseEntity update(@PathVariable Integer id, @Validated @RequestBody UpdateParamDto dto) throws Exception {
         TesterDto result = pscTesterService.updateTester(id, dto.getFieldName(), dto.getValue());
         return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/api/testers/{ids}")
-    public ResponseEntity delete(@PathVariable String[] ids) throws Exception {
+    public ResponseEntity delete(@PathVariable Integer[] ids) throws Exception {
         pscTesterService.deleteTesters(ids);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/api/testers")
     public ResponseEntity create(@Validated @RequestBody TesterRequestDto dto) throws Exception {
-        checkArgument(StringUtils.isNotBlank(dto.getId()), "Id should not be empty!");
-        checkArgument(!pscTesterService.exists(dto.getId()), "Data already exists");
+//        checkArgument(StringUtils.isNotBlank(dto.getId()), "Id should not be empty!");
+//        checkArgument(!pscTesterService.exists(dto.getId()), "Data already exists");
 
         pscTesterService.saveTester(dto.toTester());
         return ResponseEntity.ok("SUCCESS");

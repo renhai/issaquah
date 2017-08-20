@@ -6,19 +6,17 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * Created by hai on 8/17/17.
  */
 @Getter
 @Setter
 public class TesterRequestDto {
-	@NotNull
-	private String id;
+	private Integer id;
 	private String name;
 	private String account;
 	private String gender;
+	private String badgeNo;
 	private String idNo;
 	private String education;
 	private String jobTitle;
@@ -56,6 +54,7 @@ public class TesterRequestDto {
 			.name(name)
 			.account(account)
 			.gender(Tester.Gender.fromText(gender))
+            .badgeNo(badgeNo)
 			.idNo(idNo)
 			.education(education)
 			.jobTitle(jobTitle)

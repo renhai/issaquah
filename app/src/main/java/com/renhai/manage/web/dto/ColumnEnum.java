@@ -8,10 +8,11 @@ import lombok.Getter;
 
 public enum ColumnEnum {
 
+	id("ID"),
 	name("姓名"),
 	account("账号"),
 	gender("性别"),
-	id("工作证编号"),
+	badgeNo("工作证编号"),
 	idNo("证件号"),
 	education("文化程度"),
 	jobTitle("职称"),

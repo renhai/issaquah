@@ -120,7 +120,7 @@ export default class Home extends React.Component {
     const multiSelectData = [];
     for (const row of this.props.displayFields) {
       if (row.show) {
-        let editable = !['age'].includes(row.field);
+        let editable = !['id', 'age'].includes(row.field);
         switch (row.field) {
           case 'gender':
             editable = { type: 'select', options: { values: ['男', '女'] } };
@@ -138,7 +138,7 @@ export default class Home extends React.Component {
             break;
         }
         let filter = null;
-        if (['name', 'account', 'idNo', 'workUnit', 'email'].includes(row.field)) {
+        if (['name', 'account', 'idNo', 'workUnit', 'email', 'testCenter'].includes(row.field)) {
           filter = { type: 'TextFilter', delay: 1000 };
         }
 

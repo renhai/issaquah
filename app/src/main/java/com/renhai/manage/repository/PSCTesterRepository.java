@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
  * Created by hai on 6/26/17.
  */
 @Repository
-public interface PSCTesterRepository extends JpaRepository<Tester, String> {
+public interface PSCTesterRepository extends JpaRepository<Tester, Integer> {
 }

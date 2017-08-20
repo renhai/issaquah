@@ -4,10 +4,11 @@
 
 const initialState = {
   displayFields: [
-    {field: 'id', show: true, displayName: '工作证编号', width: 100},
+    {field: 'id', show: true, displayName: 'ID', width: 60},
     {field: 'name', show: true, displayName: '姓名', width: 100},
     {field: 'account', show: true, displayName: '账号', width: 130},
     {field: 'gender', show: true, displayName: '性别', width: 60},
+    {field: 'badgeNo', show: true, displayName: '工作证编号', width: 100},
     {field: 'idNo', show: true, displayName: '身份证号', width: 180},
     {field: 'education', show: true, displayName: '文化程度', width: 100},
     {field: 'jobTitle', show: true, displayName: '职称', width: 100},

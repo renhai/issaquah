@@ -19,7 +19,7 @@ public class TesterDto {
 	public TesterDto(Tester tester) {
 		this.tester = tester;
 	}
-	public String getId() {
+	public Integer getId() {
 		return tester.getId();
 	}
 
@@ -33,6 +33,10 @@ public class TesterDto {
 
 	public String getGender() {
 		return tester.getGender() == null ? "" : tester.getGender().getText();
+	}
+
+	public String getBadgeNo() {
+		return tester.getBadgeNo();
 	}
 
 	public String getIdNo() {

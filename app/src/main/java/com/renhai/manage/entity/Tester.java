@@ -19,9 +19,9 @@ import java.util.Date;
 @Table(name = "tester")
 public class Tester {
 
-	/** 工作证编号 */
 	@Id
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 	/** 姓名 */
 	@NotNull
 	private String name;
@@ -32,6 +32,8 @@ public class Tester {
 	@Enumerated(EnumType.STRING)
 	@Column(length = 1)
 	private Gender gender;
+	/** 工作证编号 */
+	private String badgeNo;
 	/** 身份证号 */
 	@Column(length = 18)
 	private String idNo;

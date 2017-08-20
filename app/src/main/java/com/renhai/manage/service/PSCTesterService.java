@@ -82,12 +82,12 @@ public class PSCTesterService {
 		return result;
 	}
 
-	public Tester getTesterById(String id) {
-		return pscTesterRepository.findOne(id);
-	}
+//	public Tester getTesterById(Integer id) {
+//		return pscTesterRepository.findOne(id);
+//	}
 
 	@Transactional
-	public TesterDto updateTester(String id, String fieldName, String value)
+	public TesterDto updateTester(Integer id, String fieldName, String value)
 		throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, ParseException {
 		Tester tester = pscTesterRepository.findOne(id);
 		Field field = FieldUtils.getField(Tester.class, fieldName, true);
@@ -117,13 +117,13 @@ public class PSCTesterService {
 	}
 
 	@Transactional
-	public void deleteTesters(String[] ids) {
-		for (String id : ids) {
+	public void deleteTesters(Integer[] ids) {
+		for (Integer id : ids) {
 			pscTesterRepository.delete(id);
 		}
 	}
 
-	public boolean exists(String id) {
-		return pscTesterRepository.exists(id);
-	}
+//	public boolean exists(Integer id) {
+//		return pscTesterRepository.exists(id);
+//	}
 }

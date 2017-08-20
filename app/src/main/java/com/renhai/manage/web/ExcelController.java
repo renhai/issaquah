@@ -10,7 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -34,8 +36,6 @@ import java.util.List;
 @RestController
 @Slf4j
 public class ExcelController {
-
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
 
 	@Autowired
 	private PSCTesterService pscTesterService;
@@ -59,7 +59,7 @@ public class ExcelController {
 				.name(row.getCell(0).getStringCellValue())
 				.account(row.getCell(1).getStringCellValue())
 				.gender(Tester.Gender.fromText(StringUtils.trimWhitespace(row.getCell(2).getStringCellValue())))
-				.id(row.getCell(3).getStringCellValue())
+				.badgeNo(row.getCell(3).getStringCellValue())
 				.idNo(row.getCell(4).getStringCellValue())
 				.education(row.getCell(5).getStringCellValue())
 				.jobTitle(row.getCell(6).getStringCellValue())
@@ -73,7 +73,7 @@ public class ExcelController {
 				.telMobile(row.getCell(14).getStringCellValue())
 				.email(row.getCell(15).getStringCellValue())
 				.dialect(row.getCell(16).getStringCellValue())
-				.cnTestDate(StringUtils.isEmpty(row.getCell(17).getStringCellValue()) ? null : DATE_FORMAT.parse(row.getCell(17).getStringCellValue()))
+				.cnTestDate(StringUtils.isEmpty(row.getCell(17).getStringCellValue()) ? null : TesterDto.DEFAULT_DATE_FORMAT.parse(row.getCell(17).getStringCellValue()))
 				.cnScore(StringUtils.isEmpty(row.getCell(18).getStringCellValue()) ? null : Double.parseDouble(StringUtils.trimWhitespace(row.getCell(18).getStringCellValue())))
 				.level(Tester.Level.fromText(StringUtils.trimWhitespace(row.getCell(19).getStringCellValue())))
 				.grade(Tester.Grade.fromText(StringUtils.trimWhitespace(row.getCell(20).getStringCellValue())))
