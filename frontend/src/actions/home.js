@@ -35,7 +35,7 @@ export function uploadExcel(excel) {
     dispatch({type: 'UPLOAD_EXCEL_LOADING'});
     const data = new FormData();
     data.append('file', excel);
-    axios.post('/api/upload', data)
+    axios.post('/api/excel/upload', data)
       .then((response) => {
         dispatch({type: 'UPLOAD_EXCEL_SUCCESS', payload: response});
         window.location.reload();
@@ -63,6 +63,30 @@ export function addRow(row) {
       .then((response) => {
         dispatch({type: 'FETCH_TESTERS', payload: axios.get('/api/testers')});
       }).catch((error) => {
+        NotificationManager.error('Warning message', error.response.data.message, 3000);
+      });
+  };
+}
+
+export function downloadExcel(store) {
+  return (dispatch, getState) => {
+    const params = [];
+    for (const value of getState().settings.displayFields) {
+      if (value.show) {
+        params.push(value.field);
+      }
+    }
+    const queryString = params.join();
+    let data = store.data;
+    if (store.isOnFilter) {
+      data = store.filteredData;
+    }
+    axios.post(`/api/excel?fields=${queryString}`, data)
+      .then((resp) => {
+        // window.open(`/api/download?path=${resp.data}`);
+        window.location.href = `/api/excel/download?path=${resp.data}`;
+      })
+      .catch((error) => {
         NotificationManager.error('Warning message', error.response.data.message, 3000);
       });
   };

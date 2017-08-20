@@ -9,7 +9,10 @@ const api = require('./api/index');
 const config = require('./config/index');
 
 const app = new Express();
+const bodyParser = require('body-parser');
 
+app.use(bodyParser.json({limit: '5mb'}));
+app.use(bodyParser.urlencoded({limit: '5mb', extended: true}));
 app.use('/api', api);
 app.use(history());
 config.api && app.use(proxy(`${config.api.host}:${config.api.port}`, {

@@ -6,7 +6,7 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/css/react-bootstrap-table.css';
 import 'react-bootstrap-multiselect/css/bootstrap-multiselect.css';
 import Multiselect from 'react-bootstrap-multiselect';
-import {loadTesters, editCell, sortChange, uploadExcel, deleteRows, addRow} from '../../actions/home';
+import {loadTesters, editCell, sortChange, uploadExcel, deleteRows, addRow, downloadExcel} from '../../actions/home';
 import {checkDisplayField, selectAllFields, deselectAllFields} from '../../actions/settings';
 import './Home.css';
 
@@ -28,6 +28,7 @@ const actionToProps = {
   onDeselectAllField: deselectAllFields,
   onDeleteRows: deleteRows,
   onAddRow: addRow,
+  onClickDownload: downloadExcel,
 };
 
 @injectIntl
@@ -47,12 +48,12 @@ export default class Home extends React.Component {
     onDeselectAllField: Function,
     onDeleteRows: Function,
     onAddRow: Function,
+    onClickDownload: Function
   }
 
   constructor(props) {
     super(props);
     this.getTableWidth = this.getTableWidth.bind(this);
-    this.getDownloadUrl = this.getDownloadUrl.bind(this);
     this.createCustomButtonGroup = this.createCustomButtonGroup.bind(this);
     this.onClickUpload = this.onClickUpload.bind(this);
     this.state = {};
@@ -77,22 +78,11 @@ export default class Home extends React.Component {
     return width + 37;
   }
 
-  getDownloadUrl() {
-    const params = [];
-    for (const value of this.props.displayFields) {
-      if (value.show) {
-        params.push(value.field);
-      }
-    }
-    const queryString = params.join();
-    return `/api/download?fields=${queryString}`;
-  }
-
   createCustomButtonGroup = props =>
     <ButtonGroup>
       { props.insertBtn }
       { props.deleteBtn }
-      <Button bsClass="btn btn-primary" bsStyle="link" href={this.getDownloadUrl()}>Download</Button>
+      <Button bsClass="btn btn-primary" onClick={(e) => { this.props.onClickDownload(this.table.store); }}>Download</Button>
       <Button bsStyle="success" onClick={(e) => this.setState({open: !this.state.open })}>更多</Button>
     </ButtonGroup>
 
@@ -144,7 +134,7 @@ export default class Home extends React.Component {
             break;
         }
         let filter = null;
-        if (row.field === 'name') {
+        if (['name', 'account'].includes(row.field)) {
           filter = { type: 'TextFilter', delay: 1000 };
         }
 

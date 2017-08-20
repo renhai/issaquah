@@ -2,7 +2,7 @@ package com.renhai.manage.web;
 
 import com.renhai.manage.service.PSCTesterService;
 import com.renhai.manage.service.dto.TesterDto;
-import com.renhai.manage.web.dto.CreateTesterDto;
+import com.renhai.manage.web.dto.TesterRequestDto;
 import com.renhai.manage.web.dto.TesterResponseDto;
 import com.renhai.manage.web.dto.UpdateParamDto;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +46,7 @@ public class TesterController {
 	}
 
 	@PostMapping("/api/testers")
-	public ResponseEntity create(@Validated @RequestBody CreateTesterDto dto) throws Exception {
+	public ResponseEntity create(@Validated @RequestBody TesterRequestDto dto) throws Exception {
 		checkArgument(StringUtils.isNotBlank(dto.getId()), "Id should not be empty!");
 		checkArgument(!pscTesterService.exists(dto.getId()), "Data already exists");
 

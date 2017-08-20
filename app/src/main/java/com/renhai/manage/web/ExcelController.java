@@ -1,31 +1,31 @@
 package com.renhai.manage.web;
 
+import com.google.common.base.Preconditions;
 import com.renhai.manage.entity.Tester;
 import com.renhai.manage.service.PSCTesterService;
 import com.renhai.manage.service.dto.TesterDto;
 import com.renhai.manage.web.dto.ColumnEnum;
+import com.renhai.manage.web.dto.TesterRequestDto;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.OutputStream;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -40,7 +40,7 @@ public class ExcelController {
 	@Autowired
 	private PSCTesterService pscTesterService;
 
-	@PostMapping("/api/upload")
+	@PostMapping("/api/excel/upload")
 	public ResponseEntity uploadFile(@RequestParam("file") MultipartFile excelFile) throws Exception {
 		Workbook workbook = new XSSFWorkbook(excelFile.getInputStream());
 		Sheet sheet = workbook.getSheetAt(0);
@@ -87,22 +87,42 @@ public class ExcelController {
 		return ResponseEntity.ok().body("success");
 	}
 
-	@GetMapping("/api/download")
-	public void download(@RequestParam(value = "fields") String[] fields, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		Workbook excel = createExcel(fields);
+	@PostMapping("/api/excel")
+	public ResponseEntity download(@RequestParam(value = "fields") String[] fields, @RequestBody List<TesterRequestDto> data) throws Exception {
+		Preconditions.checkArgument(fields != null && fields.length > 0);
+		Preconditions.checkArgument(CollectionUtils.isNotEmpty(data));
+
+		Workbook excel = createExcel(fields, data);
+		File tempFile = File.createTempFile(RandomStringUtils.randomAlphabetic(8), "xlsx");
+		tempFile.deleteOnExit();
+		FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
+		excel.write(fileOutputStream);
+		fileOutputStream.flush();
+		fileOutputStream.close();
+		return ResponseEntity.ok(tempFile.getAbsoluteFile());
+
+	}
+
+	@GetMapping("/api/excel/download")
+	public void download(@RequestParam(value = "path") String path, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		File file = new File(path);
+		if(!file.exists()){
+			String errorMessage = "Sorry. The file you are looking for does not exist";
+			OutputStream outputStream = response.getOutputStream();
+			outputStream.write(errorMessage.getBytes(Charset.forName("UTF-8")));
+			outputStream.close();
+			return;
+		}
 		String fileName = String.format("%s.xlsx", RandomStringUtils.randomAlphabetic(8));
 		response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
 		response.setContentType("application/octet-stream") ;
-		OutputStream out = response.getOutputStream() ;
-		excel.write(out) ;
-		out.flush();
-		out.close();
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
 	}
 
 	private Workbook createExcel(String[] fields) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet sheet = workbook.createSheet("Sheet1");
-//		String[] fields = {"name", "account", "gender", "id", "cnTestDate"};
 		Row header = sheet.createRow(0);
 		for (int i = 0; i < fields.length; i ++) {
 			Cell cell = header.createCell(i);
@@ -112,34 +132,41 @@ public class ExcelController {
 
 		List<TesterDto> testers = pscTesterService.getAllTesters("account", "asc");
 
-//		CellStyle cellStyle = workbook.createCellStyle();
-//		CreationHelper createHelper = workbook.getCreationHelper();
-//		cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("yyyymmdd"));
-
 		int rowNum = 1;
 		for (TesterDto tester : testers) {
 			Row row = sheet.createRow(rowNum ++);
 			int colNum = 0;
 			for (String fieldName : fields) {
-//				Object value = FieldUtils.readDeclaredField(tester, fieldName, true);
+				Object value = MethodUtils.invokeMethod(tester, "get"+ org.apache.commons.lang3.StringUtils.capitalize(fieldName));
+				if (value == null) {
+					row.createCell(colNum ++).setCellValue(org.apache.commons.lang3.StringUtils.EMPTY);
+				} else {
+					row.createCell(colNum ++).setCellValue(value.toString());
+				}
+			}
+		}
+
+		return workbook;
+	}
+
+	private Workbook createExcel(String[] fields, List<TesterRequestDto> data) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet sheet = workbook.createSheet("Sheet1");
+		Row header = sheet.createRow(0);
+		for (int i = 0; i < fields.length; i ++) {
+			Cell cell = header.createCell(i);
+			ColumnEnum columnEnum = ColumnEnum.fromName(fields[i]);
+			cell.setCellValue(columnEnum.getDisplayName());
+		}
+		int rowNum = 1;
+		for (TesterRequestDto tester : data) {
+			Row row = sheet.createRow(rowNum ++);
+			int colNum = 0;
+			for (String fieldName : fields) {
 				Object value = MethodUtils.invokeMethod(tester, "get"+ org.apache.commons.lang3.StringUtils.capitalize(fieldName));
 				if (value == null) {
 					row.createCell(colNum ++).setCellValue("");
-				}
-//				else if (value instanceof Tester.Gender) {
-//					row.createCell(colNum ++).setCellValue(((Tester.Gender) value).getText());
-//				} else if (value instanceof Tester.Level) {
-//					row.createCell(colNum ++).setCellValue(((Tester.Level) value).getText());
-//				} else if (value instanceof Tester.Grade) {
-//					row.createCell(colNum ++).setCellValue(((Tester.Grade) value).getText());
-//				} else if (value instanceof String) {
-//					row.createCell(colNum ++).setCellValue((String) value);
-//				} else if (value instanceof Date) {
-//					Cell cell = row.createCell(colNum ++);
-//					cell.setCellValue((Date) value);
-//					cell.setCellStyle(cellStyle);
-//				}
-				else {
+				} else {
 					row.createCell(colNum ++).setCellValue(value.toString());
 				}
 			}

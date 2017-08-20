@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
  */
 @Getter
 @Setter
-public class CreateTesterDto {
+public class TesterRequestDto {
 	@NotNull
 	private String id;
 	private String name;
@@ -40,6 +40,7 @@ public class CreateTesterDto {
 	private String bankAccount;
 
 	private String dob;
+	private Integer age;
 	private Integer trainingYear;
 	private Integer testCount;
 	private String status;
