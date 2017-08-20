@@ -37,7 +37,9 @@ const initialState = {
     {field: 'backboneClass', show: true, displayName: '骨干班次', width: 200},
     {field: 'testCenter', show: true, displayName: '测试分中心', width: 200},
     {field: 'termNo', show: true, displayName: '期数', width: 100},
-    {field: 'note', show: true, displayName: '备注', width: 200},
+    {field: 'note1', show: true, displayName: '备注1', width: 200},
+    {field: 'note2', show: true, displayName: '备注2', width: 200},
+    {field: 'note3', show: true, displayName: '备注3', width: 200},
   ]
 };
 

@@ -138,7 +138,7 @@ export default class Home extends React.Component {
             break;
         }
         let filter = null;
-        if (['name', 'account', 'idNo', 'workUnit', 'email', 'testCenter'].includes(row.field)) {
+        if (['name', 'account', 'idNo', 'badgeNo', 'workUnit', 'email', 'testCenter'].includes(row.field)) {
           filter = { type: 'TextFilter', delay: 1000 };
         }
 

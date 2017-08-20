@@ -156,7 +156,16 @@ public class TesterDto {
 		return tester.getTermNo();
 	}
 
-	public String getNote() {
-		return tester.getNote();
+	public String getNote1() {
+		return tester.getNote1();
 	}
+	public String getNote2() {
+		return tester.getNote2();
+	}
+
+	public String getNote3() {
+		return tester.getNote3();
+	}
+
+
 }

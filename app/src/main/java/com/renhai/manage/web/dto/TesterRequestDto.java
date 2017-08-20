@@ -46,7 +46,9 @@ public class TesterRequestDto {
 	private String backboneClass;
 	private String testCenter;
 	private Integer termNo;
-	private String note;
+	private String note1;
+	private String note2;
+	private String note3;
 
 	public Tester toTester() throws Exception {
 		return Tester.builder()
@@ -82,7 +84,9 @@ public class TesterRequestDto {
 			.backboneClass(backboneClass)
 			.testCenter(testCenter)
 			.termNo(termNo)
-			.note(note)
+			.note1(note1)
+			.note2(note2)
+			.note3(note3)
 			.build();
 	}
 }

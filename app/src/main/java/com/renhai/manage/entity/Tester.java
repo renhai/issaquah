@@ -96,8 +96,12 @@ public class Tester {
 	private String testCenter;
 	/** 期数 */
 	private Integer termNo;
-	/** 备注 */
-	private String note;
+	/** 备注1 */
+	private String note1;
+	/** 备注2 */
+	private String note2;
+	/** 备注3 */
+	private String note3;
 
 	public enum Gender {
 		M("男"), F("女");
