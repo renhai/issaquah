@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Ordering;
 import com.renhai.manage.entity.Tester;
 import com.renhai.manage.repository.PSCTesterRepository;
+import com.renhai.manage.service.dto.FilterValueDto;
 import com.renhai.manage.service.dto.TesterDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.IteratorUtils;
@@ -18,9 +19,8 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -37,10 +37,31 @@ public class PSCTesterService {
 		pscTesterRepository.save(tester);
 	}
 
-	public List<TesterDto> getAllTesters(String sortName, String sortOrder) {
+	public List<TesterDto> getAllTesters(String sortName, String sortOrder, Map<String, FilterValueDto> filter) {
 //		List<Tester> testers = IteratorUtils.toList(pscTesterRepository.findAll(new Sort(Sort.Direction.fromString(sortOrder), sortName)).iterator());
 		List<Tester> testers = IteratorUtils.toList(pscTesterRepository.findAll().iterator());
 		List<TesterDto> result = testers.stream().map(tester -> new TesterDto(tester)).collect(Collectors.toList());
+
+		if (filter != null && !filter.isEmpty()) {
+			List<Predicate<TesterDto>> predicates = new ArrayList<>();
+			for (String filterKey : filter.keySet()) {
+                String filterValue = filter.get(filterKey).getValue();
+                Predicate<TesterDto> predicate = dto -> {
+                    try {
+                        Object value  = MethodUtils.invokeMethod(dto, "get"+ StringUtils.capitalize(filterKey));
+                        return value.toString().contains(filterValue);
+                    } catch (Exception e) {
+                        log.error(e.getMessage(), e);
+                        return false;
+                    }
+                };
+                predicates.add(predicate);
+            }
+			Predicate<TesterDto> combinePredicate = predicates.stream().reduce(Predicate::and).orElse(x -> true);
+			result = result.stream().filter(combinePredicate).collect(Collectors.toList());
+		}
+
+
 		Ordering<TesterDto> ordering = Ordering.natural().nullsFirst().onResultOf(new Function<TesterDto, Comparable>() {
 			@Nullable
 			@Override

@@ -20,14 +20,19 @@ export function editCell(row, fieldName, value) {
       dispatch({ type: 'EDIT_CELL_SUCCESS', payload: response });
     }).catch((error) => {
       dispatch({ type: 'EDIT_CELL_ERROR', payload: error });
-      NotificationManager.error('Warning message', error.response.data.message, 3000);
+      NotificationManager.error('Warning message', error.response.data.message, 5000);
     });
   };
 }
 
 export function sortChange(sortName, sortOrder) {
-  return (dispatch, getState) =>
-    dispatch({type: 'SORT_CHANGE', payload: axios.get(`/api/testers?sortName=${sortName}&sortOrder=${sortOrder}`)});
+  return (dispatch, getState) => {
+    const filterObj = getState().home.filterObj;
+    dispatch({
+      type: 'SORT_CHANGE',
+      payload: axios.get(`/api/testers?sortName=${sortName}&sortOrder=${sortOrder}&filterObj=${JSON.stringify(filterObj)}`)
+    });
+  };
 }
 
 export function uploadExcel(excel) {
@@ -41,18 +46,21 @@ export function uploadExcel(excel) {
         window.location.reload();
       }).catch((error) => {
         dispatch({type: 'UPLOAD_EXCEL_ERROR', payload: error});
-        NotificationManager.error('Warning message', error.response.data.message, 3000);
+        NotificationManager.error('Warning message', error.response.data.message, 5000);
       });
   };
 }
 
 export function deleteRows(rows) {
   return (dispatch, getState) => {
+    const sortName = getState().home.sortName;
+    const sortOrder = getState().home.sortOrder;
+    const filterObj = getState().home.filterObj;
     axios.delete(`/api/testers/${rows.join()}`)
       .then((response) => {
-        dispatch({type: 'FETCH_TESTERS', payload: axios.get('/api/testers')});
+        dispatch({type: 'FETCH_TESTERS', payload: axios.get(`/api/testers?sortName=${sortName}&sortOrder=${sortOrder}&filterObj=${JSON.stringify(filterObj)}`)});
       }).catch((error) => {
-        NotificationManager.error('Warning message', error.response.data.message, 3000);
+        NotificationManager.error('Warning message', error.response.data.message, 5000);
       });
   };
 }
@@ -61,9 +69,10 @@ export function addRow(row) {
   return (dispatch, getState) => {
     axios.post('/api/testers', row)
       .then((response) => {
-        dispatch({type: 'FETCH_TESTERS', payload: axios.get('/api/testers')});
+        // dispatch({type: 'FETCH_TESTERS', payload: axios.get('/api/testers')});
+        window.location.reload();
       }).catch((error) => {
-        NotificationManager.error('Warning message', error.response.data.message, 3000);
+        NotificationManager.error('Warning message', error.response.data.message, 5000);
       });
   };
 }
@@ -87,8 +96,18 @@ export function downloadExcel(store) {
         window.location.href = `/api/excel/download?path=${resp.data}`;
       })
       .catch((error) => {
-        NotificationManager.error('Warning message', error.response.data.message, 3000);
+        NotificationManager.error('Warning message', error.response.data.message, 5000);
       });
   };
 }
 
+export function filterChange(filterObj) {
+  return (dispatch, getState) => {
+    const sortName = getState().home.sortName;
+    const sortOrder = getState().home.sortOrder;
+    dispatch({
+      type: 'FILTER_CHANGE',
+      payload: axios.get(`/api/testers?sortName=${sortName}&sortOrder=${sortOrder}&filterObj=${JSON.stringify(filterObj)}`)
+    });
+  };
+}

@@ -6,6 +6,7 @@ const initialState = {
   testers: [],
   sortName: undefined,
   sortOrder: undefined,
+  filterObj: {}
 };
 
 export default function reducer(state = initialState, {type, payload}) {
@@ -38,6 +39,12 @@ export default function reducer(state = initialState, {type, payload}) {
         testers: payload.data.testers,
         sortName: payload.data.sortName,
         sortOrder: payload.data.sortOrder
+      };
+    case 'FILTER_CHANGE_SUCCESS':
+      return {
+        ...state,
+        testers: payload.data.testers,
+        filterObj: JSON.parse(payload.data.filterObj)
       };
 
     default:

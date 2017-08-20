@@ -6,7 +6,7 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import 'react-bootstrap-table/css/react-bootstrap-table.css';
 import 'react-bootstrap-multiselect/css/bootstrap-multiselect.css';
 import Multiselect from 'react-bootstrap-multiselect';
-import {loadTesters, editCell, sortChange, uploadExcel, deleteRows, addRow, downloadExcel} from '../../actions/home';
+import {loadTesters, editCell, sortChange, uploadExcel, deleteRows, addRow, downloadExcel, filterChange} from '../../actions/home';
 import {checkDisplayField, selectAllFields, deselectAllFields} from '../../actions/settings';
 import './Home.css';
 
@@ -29,6 +29,7 @@ const actionToProps = {
   onDeleteRows: deleteRows,
   onAddRow: addRow,
   onClickDownload: downloadExcel,
+  onFilterChange: filterChange,
 };
 
 @injectIntl
@@ -48,7 +49,8 @@ export default class Home extends React.Component {
     onDeselectAllField: Function,
     onDeleteRows: Function,
     onAddRow: Function,
-    onClickDownload: Function
+    onClickDownload: Function,
+    onFilterChange: Function,
   }
 
   constructor(props) {
@@ -100,12 +102,14 @@ export default class Home extends React.Component {
       btnGroup: this.createCustomButtonGroup,
       onDeleteRow: this.props.onDeleteRows,
       onAddRow: this.props.onAddRow,
+      onFilterChange: this.props.onFilterChange,
     };
     const remote = (remoteObj) => {
       remoteObj.cellEdit = true;
       remoteObj.sort = true;
       remoteObj.insertRow = true;
       remoteObj.dropRow = true;
+      remoteObj.filter = true;
       return remoteObj;
     };
     const selectRow = {

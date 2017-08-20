@@ -17,4 +17,5 @@ public class TesterResponseDto {
 	private List<TesterDto> testers;
 	private String sortName;
 	private String sortOrder;
+	private String filterObj;
 }

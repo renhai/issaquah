@@ -1,6 +1,10 @@
 package com.renhai.manage.web;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.renhai.manage.service.PSCTesterService;
+import com.renhai.manage.service.dto.FilterValueDto;
 import com.renhai.manage.service.dto.TesterDto;
 import com.renhai.manage.web.dto.TesterRequestDto;
 import com.renhai.manage.web.dto.TesterResponseDto;
@@ -11,9 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import static com.google.common.base.Preconditions.*;
 
+import java.util.HashMap;
 import java.util.List;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * Created by hai on 7/12/17.
@@ -28,9 +34,19 @@ public class TesterController {
 	@GetMapping("/api/testers")
 	public ResponseEntity getAll(
 		@RequestParam(defaultValue = "id") String sortName,
-		@RequestParam(defaultValue = "asc") String sortOrder) throws Exception{
-		List<TesterDto> testers = pscTesterService.getAllTesters(sortName, sortOrder);
-		return ResponseEntity.ok(new TesterResponseDto(testers, sortName, sortOrder));
+		@RequestParam(defaultValue = "asc") String sortOrder,
+		@RequestParam(required = false) String filterObj) throws Exception {
+		HashMap<String,FilterValueDto> filter = null;
+		if (StringUtils.isNotBlank(filterObj)) {
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+			TypeReference<HashMap<String, FilterValueDto>> typeRef
+                    = new TypeReference<HashMap<String, FilterValueDto>>() {};
+
+			filter = mapper.readValue(filterObj, typeRef);
+		}
+		List<TesterDto> testers = pscTesterService.getAllTesters(sortName, sortOrder, filter);
+		return ResponseEntity.ok(new TesterResponseDto(testers, sortName, sortOrder, filterObj));
 	}
 
 	@PutMapping("/api/testers/{id}")

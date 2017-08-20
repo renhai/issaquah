@@ -130,7 +130,7 @@ public class ExcelController {
 			cell.setCellValue(columnEnum.getDisplayName());
 		}
 
-		List<TesterDto> testers = pscTesterService.getAllTesters("account", "asc");
+		List<TesterDto> testers = pscTesterService.getAllTesters("account", "asc", null);
 
 		int rowNum = 1;
 		for (TesterDto tester : testers) {
