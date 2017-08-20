@@ -5,9 +5,14 @@ import { NotificationManager } from 'react-notifications';
 
 const axios = require('axios');
 
+function fetchTesters(sortName, sortOrder, filterObj) {
+  const data = {sortName, sortOrder, filterObj};
+  return {type: 'FETCH_TESTERS', payload: axios.post('/api/testers/all', data)};
+}
+
 export function loadTesters() {
   return (dispatch, getState) =>
-    dispatch({type: 'FETCH_TESTERS', payload: axios.get('/api/testers')});
+    dispatch(fetchTesters('id', 'asc', undefined));
 }
 
 export function editCell(row, fieldName, value) {
@@ -28,10 +33,7 @@ export function editCell(row, fieldName, value) {
 export function sortChange(sortName, sortOrder) {
   return (dispatch, getState) => {
     const filterObj = getState().home.filterObj;
-    dispatch({
-      type: 'SORT_CHANGE',
-      payload: axios.get(`/api/testers?sortName=${sortName}&sortOrder=${sortOrder}&filterObj=${JSON.stringify(filterObj)}`)
-    });
+    dispatch(fetchTesters(sortName, sortOrder, filterObj));
   };
 }
 
@@ -58,7 +60,7 @@ export function deleteRows(rows) {
     const filterObj = getState().home.filterObj;
     axios.delete(`/api/testers/${rows.join()}`)
       .then((response) => {
-        dispatch({type: 'FETCH_TESTERS', payload: axios.get(`/api/testers?sortName=${sortName}&sortOrder=${sortOrder}&filterObj=${JSON.stringify(filterObj)}`)});
+        dispatch(fetchTesters(sortName, sortOrder, filterObj));
       }).catch((error) => {
         NotificationManager.error('Warning message', error.response.data.message, 5000);
       });
@@ -69,7 +71,6 @@ export function addRow(row) {
   return (dispatch, getState) => {
     axios.post('/api/testers', row)
       .then((response) => {
-        // dispatch({type: 'FETCH_TESTERS', payload: axios.get('/api/testers')});
         window.location.reload();
       }).catch((error) => {
         NotificationManager.error('Warning message', error.response.data.message, 5000);
@@ -105,9 +106,6 @@ export function filterChange(filterObj) {
   return (dispatch, getState) => {
     const sortName = getState().home.sortName;
     const sortOrder = getState().home.sortOrder;
-    dispatch({
-      type: 'FILTER_CHANGE',
-      payload: axios.get(`/api/testers?sortName=${sortName}&sortOrder=${sortOrder}&filterObj=${JSON.stringify(filterObj)}`)
-    });
+    dispatch(fetchTesters(sortName, sortOrder, filterObj));
   };
 }

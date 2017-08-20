@@ -16,7 +16,8 @@ export default function reducer(state = initialState, {type, payload}) {
         ...state,
         testers: payload.data.testers,
         sortName: payload.data.sortName,
-        sortOrder: payload.data.sortOrder
+        sortOrder: payload.data.sortOrder,
+        filterObj: payload.data.filterObj
       };
     case 'EDIT_CELL_SUCCESS': {
       const testers = state.testers;
@@ -33,19 +34,19 @@ export default function reducer(state = initialState, {type, payload}) {
         testers: newTesters
       };
     }
-    case 'SORT_CHANGE_SUCCESS':
-      return {
-        ...state,
-        testers: payload.data.testers,
-        sortName: payload.data.sortName,
-        sortOrder: payload.data.sortOrder
-      };
-    case 'FILTER_CHANGE_SUCCESS':
-      return {
-        ...state,
-        testers: payload.data.testers,
-        filterObj: JSON.parse(payload.data.filterObj)
-      };
+    // case 'SORT_CHANGE_SUCCESS':
+    //   return {
+    //     ...state,
+    //     testers: payload.data.testers,
+    //     sortName: payload.data.sortName,
+    //     sortOrder: payload.data.sortOrder
+    //   };
+    // case 'FILTER_CHANGE_SUCCESS':
+    //   return {
+    //     ...state,
+    //     testers: payload.data.testers,
+    //     filterObj: payload.data.filterObj
+    //   };
 
     default:
       return state;
