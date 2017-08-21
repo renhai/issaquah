@@ -16,7 +16,14 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @ToString
-@Table(name = "tester")
+@Table(
+		name = "tester",
+		uniqueConstraints = {
+				@UniqueConstraint(name = "uk_tester_account", columnNames = {"account"}),
+				@UniqueConstraint(name = "uk_tester_badgeNo", columnNames = {"badgeNo"}),
+				@UniqueConstraint(name = "uk_tester_idNo", columnNames = {"idNo"}),
+				@UniqueConstraint(name = "uk_tester_email", columnNames = {"email"}),
+		})
 public class Tester {
 
 	@Id

@@ -89,14 +89,15 @@ public class PSCTesterService {
 	@Transactional
 	public TesterDto updateTester(Integer id, String fieldName, String value)
 		throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, ParseException {
+		value = StringUtils.trim(value);
 		Tester tester = pscTesterRepository.findOne(id);
 		Field field = FieldUtils.getField(Tester.class, fieldName, true);
-		if (StringUtils.isBlank(value)) {
+		if (StringUtils.isEmpty(value)) {
 			FieldUtils.writeDeclaredField(tester, fieldName, null, true);
 		} else if (field.getType().isEnum()) {
 			Object realValue = MethodUtils.invokeStaticMethod(field.getType(), "fromText", value);
 			if (realValue == null) {
-				throw new IllegalArgumentException("参数错误");
+				throw new IllegalArgumentException("参数类型错误");
 			}
 			FieldUtils.writeDeclaredField(tester, fieldName, realValue, true);
 		} else if (field.getType().equals(Integer.class)) {

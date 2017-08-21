@@ -46,7 +46,6 @@ public class TesterController {
             TypeReference<HashMap<String, FilterValueDto>> typeRef
                     = new TypeReference<HashMap<String, FilterValueDto>>() {
             };
-
             filter = mapper.readValue(filterObj, typeRef);
         }
         List<TesterDto> testers = pscTesterService.getAllTesters(sortName, sortOrder, filter);
@@ -78,8 +77,9 @@ public class TesterController {
 
     @PostMapping("/api/testers")
     public ResponseEntity create(@Validated @RequestBody TesterRequestDto dto) throws Exception {
-//        checkArgument(StringUtils.isNotBlank(dto.getId()), "Id should not be empty!");
-//        checkArgument(!pscTesterService.exists(dto.getId()), "Data already exists");
+        checkArgument(StringUtils.isNotBlank(dto.getName()), "姓名不能为空");
+        checkArgument(StringUtils.isNotBlank(dto.getAccount()), "账户不能为空");
+        checkArgument(StringUtils.isNotBlank(dto.getBadgeNo()), "工作证编号不能为空");
 
         pscTesterService.saveTester(dto.toTester());
         return ResponseEntity.ok("SUCCESS");

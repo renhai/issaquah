@@ -41,7 +41,9 @@ public enum ColumnEnum {
 	backboneClass("骨干班次"),
 	testCenter("测试分中心"),
 	termNo("期数"),
-	note("备注");
+	note1("备注1"),
+	note2("备注2"),
+	note3("备注3");
 
 	@Getter
 	private String displayName;

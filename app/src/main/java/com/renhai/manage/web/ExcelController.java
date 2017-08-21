@@ -52,15 +52,15 @@ public class ExcelController {
 		}
 		log.info(sb.toString());
 
-		for (int i = 1; i < sheet.getLastRowNum(); i ++) {
+		for (int i = 1; i <= sheet.getLastRowNum(); i ++) {
 			Row row = sheet.getRow(i);
 
 			Tester tester = Tester.builder()
 				.name(row.getCell(0).getStringCellValue())
-				.account(row.getCell(1).getStringCellValue())
+				.account(org.apache.commons.lang3.StringUtils.trimToNull(row.getCell(1).getStringCellValue()))
 				.gender(Tester.Gender.fromText(StringUtils.trimWhitespace(row.getCell(2).getStringCellValue())))
-				.badgeNo(row.getCell(3).getStringCellValue())
-				.idNo(row.getCell(4).getStringCellValue())
+				.badgeNo(org.apache.commons.lang3.StringUtils.trimToNull(row.getCell(3).getStringCellValue()))
+				.idNo(org.apache.commons.lang3.StringUtils.trimToNull(row.getCell(4).getStringCellValue()))
 				.education(row.getCell(5).getStringCellValue())
 				.jobTitle(row.getCell(6).getStringCellValue())
 				.occupation(row.getCell(7).getStringCellValue())
@@ -71,7 +71,7 @@ public class ExcelController {
 				.homePhone(row.getCell(12).getStringCellValue())
 				.cellPhone(row.getCell(13).getStringCellValue())
 				.telMobile(row.getCell(14).getStringCellValue())
-				.email(row.getCell(15).getStringCellValue())
+				.email(org.apache.commons.lang3.StringUtils.trimToNull(row.getCell(15).getStringCellValue()))
 				.dialect(row.getCell(16).getStringCellValue())
 				.cnTestDate(StringUtils.isEmpty(row.getCell(17).getStringCellValue()) ? null : TesterDto.DEFAULT_DATE_FORMAT.parse(row.getCell(17).getStringCellValue()))
 				.cnScore(StringUtils.isEmpty(row.getCell(18).getStringCellValue()) ? null : Double.parseDouble(StringUtils.trimWhitespace(row.getCell(18).getStringCellValue())))
