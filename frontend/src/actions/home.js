@@ -91,10 +91,14 @@ export function downloadExcel(store) {
     if (store.isOnFilter) {
       data = store.filteredData;
     }
+    if (!data || data.length === 0) {
+      return;
+    }
     axios.post(`/api/excel?fields=${queryString}`, data)
       .then((resp) => {
+        const path = encodeURIComponent(resp.data);
         // window.open(`/api/download?path=${resp.data}`);
-        window.location.href = `/api/excel/download?path=${resp.data}`;
+        window.location.href = `/api/excel/download?path=${path}`;
       })
       .catch((error) => {
         NotificationManager.error(error.response.data.message, 'Warning message', 5000);

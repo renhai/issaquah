@@ -99,8 +99,8 @@ public class ExcelController {
 
 	@PostMapping("/api/excel")
 	public ResponseEntity download(@RequestParam(value = "fields") String[] fields, @RequestBody List<TesterRequestDto> data) throws Exception {
-		Preconditions.checkArgument(fields != null && fields.length > 0);
-		Preconditions.checkArgument(CollectionUtils.isNotEmpty(data));
+		Preconditions.checkArgument(fields != null && fields.length > 0, "No Fields Selected");
+		Preconditions.checkArgument(CollectionUtils.isNotEmpty(data), "No Data");
 
 		Workbook excel = createExcel(fields, data);
 		File tempFile = File.createTempFile(RandomStringUtils.randomAlphabetic(8), "xlsx");
