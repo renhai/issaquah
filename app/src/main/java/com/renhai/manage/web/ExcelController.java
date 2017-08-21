@@ -6,6 +6,7 @@ import com.renhai.manage.service.PSCTesterService;
 import com.renhai.manage.service.dto.TesterDto;
 import com.renhai.manage.web.dto.ColumnEnum;
 import com.renhai.manage.web.dto.TesterRequestDto;
+import com.renhai.manage.web.dto.UploadResultDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,39 +54,47 @@ public class ExcelController {
 		}
 		log.info(sb.toString());
 
+		int successfulCount = 0;
+		int failedCount = 0;
+		List<Integer> failedLineNumbers = new ArrayList<>();
+
 		for (int i = 1; i <= sheet.getLastRowNum(); i ++) {
 			Row row = sheet.getRow(i);
-
-			Tester tester = Tester.builder()
-				.name(row.getCell(0).getStringCellValue())
-				.account(org.apache.commons.lang3.StringUtils.trimToNull(row.getCell(1).getStringCellValue()))
-				.gender(Tester.Gender.fromText(StringUtils.trimWhitespace(row.getCell(2).getStringCellValue())))
-				.badgeNo(org.apache.commons.lang3.StringUtils.trimToNull(row.getCell(3).getStringCellValue()))
-				.idNo(org.apache.commons.lang3.StringUtils.trimToNull(row.getCell(4).getStringCellValue()))
-				.education(row.getCell(5).getStringCellValue())
-				.jobTitle(row.getCell(6).getStringCellValue())
-				.occupation(row.getCell(7).getStringCellValue())
-				.workUnit(row.getCell(8).getStringCellValue())
-				.zipCode(row.getCell(9).getStringCellValue())
-				.workAddress(row.getCell(10).getStringCellValue())
-				.workPhone(row.getCell(11).getStringCellValue())
-				.homePhone(row.getCell(12).getStringCellValue())
-				.cellPhone(row.getCell(13).getStringCellValue())
-				.telMobile(row.getCell(14).getStringCellValue())
-				.email(org.apache.commons.lang3.StringUtils.trimToNull(row.getCell(15).getStringCellValue()))
-				.dialect(row.getCell(16).getStringCellValue())
-				.cnTestDate(StringUtils.isEmpty(row.getCell(17).getStringCellValue()) ? null : TesterDto.DEFAULT_DATE_FORMAT.parse(row.getCell(17).getStringCellValue()))
-				.cnScore(StringUtils.isEmpty(row.getCell(18).getStringCellValue()) ? null : Double.parseDouble(StringUtils.trimWhitespace(row.getCell(18).getStringCellValue())))
-				.level(Tester.Level.fromText(StringUtils.trimWhitespace(row.getCell(19).getStringCellValue())))
-				.grade(Tester.Grade.fromText(StringUtils.trimWhitespace(row.getCell(20).getStringCellValue())))
-				.bankName(row.getCell(21).getStringCellValue())
-				.bankAccount(row.getCell(22).getStringCellValue())
-				.build();
-
-			log.info(tester.toString());
-			pscTesterService.saveTester(tester);
+			try {
+				Tester tester = Tester.builder()
+                    .name(row.getCell(0).getStringCellValue())
+                    .account(org.apache.commons.lang3.StringUtils.trimToNull(row.getCell(1).getStringCellValue()))
+                    .gender(Tester.Gender.fromText(StringUtils.trimWhitespace(row.getCell(2).getStringCellValue())))
+                    .badgeNo(org.apache.commons.lang3.StringUtils.trimToNull(row.getCell(3).getStringCellValue()))
+                    .idNo(org.apache.commons.lang3.StringUtils.trimToNull(row.getCell(4).getStringCellValue()))
+                    .education(row.getCell(5).getStringCellValue())
+                    .jobTitle(row.getCell(6).getStringCellValue())
+                    .occupation(row.getCell(7).getStringCellValue())
+                    .workUnit(row.getCell(8).getStringCellValue())
+                    .zipCode(row.getCell(9).getStringCellValue())
+                    .workAddress(row.getCell(10).getStringCellValue())
+                    .workPhone(row.getCell(11).getStringCellValue())
+                    .homePhone(row.getCell(12).getStringCellValue())
+                    .cellPhone(row.getCell(13).getStringCellValue())
+                    .telMobile(row.getCell(14).getStringCellValue())
+                    .email(org.apache.commons.lang3.StringUtils.trimToNull(row.getCell(15).getStringCellValue()))
+                    .dialect(row.getCell(16).getStringCellValue())
+                    .cnTestDate(StringUtils.isEmpty(row.getCell(17).getStringCellValue()) ? null : TesterDto.DEFAULT_DATE_FORMAT.parse(row.getCell(17).getStringCellValue()))
+                    .cnScore(StringUtils.isEmpty(row.getCell(18).getStringCellValue()) ? null : Double.parseDouble(StringUtils.trimWhitespace(row.getCell(18).getStringCellValue())))
+                    .level(Tester.Level.fromText(StringUtils.trimWhitespace(row.getCell(19).getStringCellValue())))
+                    .grade(Tester.Grade.fromText(StringUtils.trimWhitespace(row.getCell(20).getStringCellValue())))
+                    .bankName(row.getCell(21).getStringCellValue())
+                    .bankAccount(row.getCell(22).getStringCellValue())
+                    .build();
+				pscTesterService.saveTester(tester);
+				successfulCount ++;
+			} catch (Exception e) {
+				log.error(e.getMessage(), e);
+				failedCount ++;
+				failedLineNumbers.add(i);
+			}
 		}
-		return ResponseEntity.ok().body("success");
+		return ResponseEntity.ok().body(new UploadResultDto(successfulCount, failedCount, failedLineNumbers));
 	}
 
 	@PostMapping("/api/excel")
@@ -171,7 +181,6 @@ public class ExcelController {
 				}
 			}
 		}
-
 		return workbook;
 	}
 

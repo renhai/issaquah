@@ -6,7 +6,8 @@ const initialState = {
   testers: [],
   sortName: undefined,
   sortOrder: undefined,
-  filterObj: {}
+  filterObj: {},
+  uploadResult: undefined,
 };
 
 export default function reducer(state = initialState, {type, payload}) {
@@ -34,20 +35,11 @@ export default function reducer(state = initialState, {type, payload}) {
         testers: newTesters
       };
     }
-    // case 'SORT_CHANGE_SUCCESS':
-    //   return {
-    //     ...state,
-    //     testers: payload.data.testers,
-    //     sortName: payload.data.sortName,
-    //     sortOrder: payload.data.sortOrder
-    //   };
-    // case 'FILTER_CHANGE_SUCCESS':
-    //   return {
-    //     ...state,
-    //     testers: payload.data.testers,
-    //     filterObj: payload.data.filterObj
-    //   };
-
+    case 'UPLOAD_EXCEL_SUCCESS':
+      return {
+        ...state,
+        uploadResult: payload.data
+      };
     default:
       return state;
   }

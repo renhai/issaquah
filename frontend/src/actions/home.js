@@ -25,7 +25,7 @@ export function editCell(row, fieldName, value) {
       dispatch({ type: 'EDIT_CELL_SUCCESS', payload: response });
     }).catch((error) => {
       dispatch({ type: 'EDIT_CELL_ERROR', payload: error });
-      NotificationManager.error('Warning message', error.response.data.message, 5000);
+      NotificationManager.error(error.response.data.message, 'Warning message', 5000);
     });
   };
 }
@@ -45,7 +45,7 @@ export function uploadExcel(excel) {
     axios.post('/api/excel/upload', data)
       .then((response) => {
         dispatch({type: 'UPLOAD_EXCEL_SUCCESS', payload: response});
-        window.location.reload();
+        dispatch(fetchTesters('id', 'asc', undefined));
       }).catch((error) => {
         dispatch({type: 'UPLOAD_EXCEL_ERROR', payload: error});
         NotificationManager.error('Warning message', error.response.data.message, 5000);
@@ -62,7 +62,7 @@ export function deleteRows(rows) {
       .then((response) => {
         dispatch(fetchTesters(sortName, sortOrder, filterObj));
       }).catch((error) => {
-        NotificationManager.error('Warning message', error.response.data.message, 5000);
+        NotificationManager.error(error.response.data.message, 'Warning message', 5000);
       });
   };
 }
@@ -73,7 +73,7 @@ export function addRow(row) {
       .then((response) => {
         window.location.reload();
       }).catch((error) => {
-        NotificationManager.error('Warning message', error.response.data.message, 5000);
+        NotificationManager.error(error.response.data.message, 'Warning message', 5000);
       });
   };
 }
@@ -97,7 +97,7 @@ export function downloadExcel(store) {
         window.location.href = `/api/excel/download?path=${resp.data}`;
       })
       .catch((error) => {
-        NotificationManager.error('Warning message', error.response.data.message, 5000);
+        NotificationManager.error(error.response.data.message, 'Warning message', 5000);
       });
   };
 }

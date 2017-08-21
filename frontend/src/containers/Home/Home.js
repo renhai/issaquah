@@ -1,8 +1,8 @@
 import React from 'react';
 import {injectIntl} from 'react-intl';
 import {connect} from 'react-redux';
-import { Button, ButtonGroup, Collapse} from 'react-bootstrap';
-import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import {Button, ButtonGroup, Modal} from 'react-bootstrap';
+import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import 'react-bootstrap-table/css/react-bootstrap-table.css';
 import 'react-bootstrap-multiselect/css/bootstrap-multiselect.css';
 import Multiselect from 'react-bootstrap-multiselect';
@@ -16,6 +16,7 @@ const stateToProps = (state, ownProps) => ({
   sortName: state.home.sortName,
   sortOrder: state.home.sortOrder,
   displayFields: state.settings.displayFields,
+  uploadResult: state.home.uploadResult,
 });
 
 const actionToProps = {
@@ -51,6 +52,7 @@ export default class Home extends React.Component {
     onAddRow: Function,
     onClickDownload: Function,
     onFilterChange: Function,
+    uploadResult: ?Object,
   }
 
   constructor(props) {
@@ -58,7 +60,14 @@ export default class Home extends React.Component {
     this.getTableWidth = this.getTableWidth.bind(this);
     this.createCustomButtonGroup = this.createCustomButtonGroup.bind(this);
     this.onClickUpload = this.onClickUpload.bind(this);
-    this.state = {};
+    this.openUploadModal = this.openUploadModal.bind(this);
+    this.closeUploadModal = this.closeUploadModal.bind(this);
+    this.openSettingColsModal = this.openSettingColsModal.bind(this);
+    this.closeSettingColsModal = this.closeSettingColsModal.bind(this);
+    this.state = {
+      showUploadModal: false,
+      showSettingColsModal: false
+    };
   }
 
   componentDidMount() {
@@ -80,12 +89,29 @@ export default class Home extends React.Component {
     return width + 37;
   }
 
+  openUploadModal() {
+    this.setState({ showUploadModal: true });
+  }
+
+  closeUploadModal() {
+    this.setState({ showUploadModal: false });
+  }
+
+  openSettingColsModal() {
+    this.setState({ showSettingColsModal: true });
+  }
+
+  closeSettingColsModal() {
+    this.setState({ showSettingColsModal: false });
+  }
+
   createCustomButtonGroup = props =>
     <ButtonGroup>
       { props.insertBtn }
       { props.deleteBtn }
-      <Button bsClass="btn btn-primary" onClick={(e) => { this.props.onClickDownload(this.table.store); }}>Download</Button>
-      <Button bsStyle="success" onClick={(e) => this.setState({open: !this.state.open })}>更多</Button>
+      <Button bsStyle="primary" onClick={(e) => { this.props.onClickDownload(this.table.store); }}>Download</Button>
+      <Button bsStyle="success" onClick={this.openUploadModal}>Upload</Button>
+      <Button onClick={this.openSettingColsModal}>Settings</Button>
     </ButtonGroup>
 
   render() {
@@ -163,32 +189,6 @@ export default class Home extends React.Component {
 
     return (
       <div style={{marginTop: '15px'}}>
-        <Collapse in={this.state.open}>
-          <div className="row">
-            <div className="col-md-4">
-              <Multiselect
-                data={multiSelectData}
-                multiple
-                maxHeight={200}
-                buttonText={(_options, _select) => '选择列'}
-                onChange={(option, checked) => {
-                  this.props.onDisplayFieldCheck(option.val(), checked);
-                }}
-                includeSelectAllOption
-                onSelectAll={() => {
-                  this.props.onSelectAllField();
-                }}
-                onDeselectAll={() => {
-                  this.props.onDeselectAllField();
-                }}
-              />
-            </div>
-            <div className="col-md-4">
-              <input id="excel-file" type="file" ref={(input) => { this.excelInput = input; }} />
-              <button id="upload-excel" type="button" className="btn btn-primary" onClick={this.onClickUpload}>Upload</button>
-            </div>
-          </div>
-        </Collapse>
         <div className="row">
           <div className="col-md-12" style={{overflowX: 'scroll'}}>
             <BootstrapTable
@@ -208,6 +208,68 @@ export default class Home extends React.Component {
             </BootstrapTable>
           </div>
         </div>
+        <Modal show={this.state.showUploadModal} onHide={this.closeUploadModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Upload Excel</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <input id="excel-file" type="file" ref={(input) => { this.excelInput = input; }} />
+            {
+              this.props.uploadResult &&
+              <div>
+                <hr />
+                <div className="panel panel-default">
+                  <div className="panel-heading">上传结果</div>
+                  <ul className="list-group">
+                    <li className="list-group-item list-group-item-success"><span>成功</span><span className="badge">{this.props.uploadResult.successfulCount}</span></li>
+                    <li className="list-group-item list-group-item-danger">
+                      <span>失败</span><span className="badge">{this.props.uploadResult.failedCount}</span>
+                    </li>
+                  </ul>
+                </div>
+                {
+                  this.props.uploadResult.failedLineNumbers && this.props.uploadResult.failedLineNumbers.length > 0 &&
+                  <div className="panel panel-warning">
+                    <div className="panel-heading">详细信息</div>
+                    <div className="panel-body">
+                      <p style={{wordWrap: 'break-word'}}>第 {'<'}{this.props.uploadResult.failedLineNumbers.join()}{'>'} 行上传失败，请检查内容并重试。</p>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.closeUploadModal}>Close</Button>
+            <Button onClick={this.onClickUpload} bsStyle="primary">Upload</Button>
+          </Modal.Footer>
+        </Modal>
+        <Modal show={this.state.showSettingColsModal} onHide={this.closeSettingColsModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Setting Columns</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Multiselect
+              data={multiSelectData}
+              multiple
+              maxHeight={200}
+              buttonText={(_options, _select) => '选择列'}
+              onChange={(option, checked) => {
+                this.props.onDisplayFieldCheck(option.val(), checked);
+              }}
+              includeSelectAllOption
+              onSelectAll={() => {
+                this.props.onSelectAllField();
+              }}
+              onDeselectAll={() => {
+                this.props.onDeselectAllField();
+              }}
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.closeSettingColsModal}>Close</Button>
+          </Modal.Footer>
+        </Modal>
       </div>
 
     );
