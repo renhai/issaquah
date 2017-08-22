@@ -160,6 +160,32 @@ export default class Home extends React.Component {
           case 'grade':
             editable = { type: 'select', options: { values: ['', 'A类测试员', 'B类测试员', 'C类测试员', 'D类测试员', '专家测试员'] } };
             break;
+          case 'cnTestDate':
+          case 'dob':
+            editable = { type: 'date'};
+            break;
+          case 'name':
+          case 'account':
+            editable = { validator: (value, rowobj) => {
+              if (!value || !value.trim()) {
+                return 'Should not be empty!';
+              }
+              return true;
+            }};
+            break;
+          case 'zipCode':
+          case 'cnScore':
+          case 'trainingYear':
+          case 'testCount':
+          case 'score':
+            editable = { validator: (value, rowobj) => {
+              if (value && isNaN(parseInt(value, 10))) {
+                return 'Should be a number!';
+              }
+              return true;
+            }};
+            break;
+
           default:
             break;
         }

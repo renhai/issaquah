@@ -12,7 +12,7 @@ import java.util.Calendar;
  */
 public class TesterDto {
 
-	public static SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
+	public static SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
 	private Tester tester;
 

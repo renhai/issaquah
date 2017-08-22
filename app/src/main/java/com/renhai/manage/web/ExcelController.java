@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +39,8 @@ import java.util.List;
 @RestController
 @Slf4j
 public class ExcelController {
+
+	private static SimpleDateFormat EXCEL_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
 
 	@Autowired
 	private PSCTesterService pscTesterService;
@@ -79,7 +82,7 @@ public class ExcelController {
                     .telMobile(row.getCell(14).getStringCellValue())
                     .email(org.apache.commons.lang3.StringUtils.trimToNull(row.getCell(15).getStringCellValue()))
                     .dialect(row.getCell(16).getStringCellValue())
-                    .cnTestDate(StringUtils.isEmpty(row.getCell(17).getStringCellValue()) ? null : TesterDto.DEFAULT_DATE_FORMAT.parse(row.getCell(17).getStringCellValue()))
+                    .cnTestDate(StringUtils.isEmpty(row.getCell(17).getStringCellValue()) ? null : EXCEL_DATE_FORMAT.parse(row.getCell(17).getStringCellValue()))
                     .cnScore(StringUtils.isEmpty(row.getCell(18).getStringCellValue()) ? null : Double.parseDouble(StringUtils.trimWhitespace(row.getCell(18).getStringCellValue())))
                     .level(Tester.Level.fromText(StringUtils.trimWhitespace(row.getCell(19).getStringCellValue())))
                     .grade(Tester.Grade.fromText(StringUtils.trimWhitespace(row.getCell(20).getStringCellValue())))
